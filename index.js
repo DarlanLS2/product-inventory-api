@@ -34,7 +34,15 @@ server.get("/produto", (req, res) => {
     })
 });
 
+// API que retorna o produto com id digitado na url
+server.get("/consulta/:id", (req, res) => {
+    const id = req.params.id;
+    conexao.query(`SELECT * FROM produto WHERE id = ${id}`, (err, resultado) => {
+        res.json(resultado);
+    })
+})
+
 // Inicia o server na porta 3030
-server.listen(3030, () => {
+server.listen(3000, () => {
     console.log("Conexao com o server: ok");
 });
