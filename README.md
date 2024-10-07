@@ -1,1 +1,1 @@
-teste de api da materia de ds da Etec
+Sistema de cadastro/consultadas materias de APS, BDII e DSI da ETEC
