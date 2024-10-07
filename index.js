@@ -1,7 +1,11 @@
-import express from "express"; // Usando import em vez de require
-import usuario from "./src/usuario.json" assert { type: "json" }; // Importando JSON
-import produto from "./src/produto.json" assert { type: "json" }; // Importando JSON
-const server = express(); // para criar um servidor
+// Importações:
+import express from "express"; 
+import mysql from "mysql2";
+import conexao from "./conexao.js"; // Importa a conexao com o banco 
+
+const server = express(); // Instancia do express
+
+// Sapo
 const sapo =                                                    
     "⬛⬛⬛⬛⬛🟩🟩⬛🟩🟩⬛⬛⬛\n"+
     "⬛⬛⬛⬛🟩🟩🟩🟩🟩🟩🟩⬛⬛\n"+ 
@@ -10,18 +14,27 @@ const sapo =
     "⬛⬛🟩🟩🟩🟩🟫🟫🟫🟫⬛⬛⬛\n"+
     "⬛⬛🟩🟩🟩🟩🟩🟩🟩⬛⬛⬛⬛\n";
 
+
+// APi que retorna um sapo
 server.get("/", (req, res) => {
     return res.send("<pre>" + sapo + "</pre>");
 });
 
+// API que retorna o json da tabela usuario
 server.get("/usuario", (req, res) => {
-    return res.json(usuario);
+    conexao.query("SELECT * FROM usuario", (err, resultado) => {
+        res.json(resultado);
+    })
 });
 
+// API que retorna o json da tabel produto
 server.get("/produto", (req, res) => {
-    return res.json(produto);
+    conexao.query("SELECT * FROM produto", (err, resultado) => {
+        res.json(resultado);
+    })
 });
 
+// Inicia o server na porta 3030
 server.listen(3030, () => {
-    console.log("server on");
+    console.log("Conexao com o server: ok");
 });
