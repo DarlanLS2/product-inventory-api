@@ -1,9 +1,0 @@
-[
-    {"nome": "Alice", "senha": "senha123", "tipo": "administrador"},
-    {"nome": "Bruno", "senha": "bruno2023", "tipo": "usuario"},
-    {"nome": "Carla", "senha": "carla321", "tipo": "usuario"},
-    {"nome": "Diego", "senha": "diego!@#", "tipo": "administrador"},
-    {"nome": "Eva", "senha": "eva456", "tipo": "usuario"},
-    {"nome": "Felipe", "senha": "felipe789", "tipo": "moderador"},
-    {"nome": "Gina", "senha": "gina@2023", "tipo": "usuario"}
-]
