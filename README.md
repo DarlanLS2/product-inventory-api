@@ -1,1 +1,1 @@
-Sistema de cadastro/consultadas materias de APS, BDII e DSI da ETEC
+Sistema de cadastro de produtos. Materias: APS, BDII e DSI
