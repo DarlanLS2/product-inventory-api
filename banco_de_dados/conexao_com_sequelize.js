@@ -52,8 +52,8 @@ const Produto = conexaoSequelize.define( "produto", {
     }
 })
 
-// usuario.sync({ force: true }); // roda este codigo so uma vez se nao vai ficar criando novas tabelas 
-// produto.sync({ force: true }); // roda este codigo so uma vez se nao vai ficar criando novas tabelas 
+// Usuario.sync({ force: true }); // roda este codigo so uma vez se nao vai ficar criando novas tabelas 
+// Produto.sync({ force: true }); // roda este codigo so uma vez se nao vai ficar criando novas tabelas 
 
 // exportando os models das tabelas
 export {Usuario, Produto};

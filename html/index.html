@@ -3,9 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Lista de Produtos</title>
 </head>
 <body>
-    <h1>seila</h1>
+    <div>
+        <div id="divUsuarios"></div>
+        <div id="divProdutos"></div>
+    </div>
+    <script>
+        // Função assíncrona para consultar a API
+        let consultarUsuarios = async () => {
+            let resposta = await fetch("http://localhost:3000/usuario");
+            let tabela = await resposta.json();
+            let div = document.querySelector("#divUsuarios");
+            div.innerHTML = "<h1>Usuarios:</h1>"
+            tabela.forEach((linha) => {
+                div.innerHTML += `
+                        <hr>
+                        <p><strong>ID:</strong> ${linha.id}</p>
+                        <p><strong>Nome:</strong> ${linha.nome}</p>
+                        <p><strong>Email:</strong> ${linha.email}</p>
+                        <p><strong>Senha:</strong> ${linha.senha}</p>
+                        
+                `;
+            })
+        };
+        let consultarProdutos = async () => {
+            let resposta = await fetch("http://localhost:3000/produto");
+            let tabela = await resposta.json();
+            let div = document.querySelector("#divProdutos");
+            div.innerHTML = "<h1>Produtos:</h1>"
+            tabela.forEach((linha) => {
+                div.innerHTML += `
+                        <hr>
+                        <p><strong>ID:</strong> ${linha.id}</p>
+                        <p><strong>Nome:</strong> ${linha.nome}</p>
+                        <p><strong>Email:</strong> ${linha.preco}</p>
+                        <p><strong>Senha:</strong> ${linha.quantidade}</p>
+                        <p><strong>Senha:</strong> ${linha.descricao}</p>
+                        
+                `;
+            })
+        };
+        consultarUsuarios();
+        consultarProdutos();
+    </script>
 </body>
 </html>

@@ -1,9 +1,12 @@
 import express from "express"; 
 import {Usuario, Produto} from "./banco_de_dados/conexao_com_sequelize.js" 
 import path from "path"; // Importa o módulo path
+import cors from "cors";
 
 const __dirname = path.resolve(); // Define __dirname corretamente
 const server = express(); // Instância do express
+
+server.use(cors());
 
 // Sapo
 const sapo =                                                    
@@ -42,14 +45,14 @@ server.get("/produto/:nome/:preco/:quantidade/:descricao", (req, res) => {
 });
 
 
-    // Rota que retorna o JSON da tabela usuario
+// Rota que retorna o JSON da tabela usuario
 server.get("/usuario", (req, res) => {
     Usuario.findAll()
       .then(dados => {
         res.json(dados)
       })
       .catch(erro => {
-        console.log("erro ao pegar ususarios: ", erro);
+        console.log("erro ao pegar usuarios: ", erro);
       })
 });
 
