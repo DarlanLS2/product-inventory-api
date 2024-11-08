@@ -27,6 +27,7 @@ server.get("/produto/:nome/:preco/:quantidade/:descricao", (req, res) => {
     quantidade: req.params.quantidade,
     descricao: req.params.descricao,
   })
+  res.send("produto cadastrado com sucesso")
 });
 
 // Rota para consulta
@@ -37,9 +38,32 @@ server.get("/consulta/:id", (req, res) => {
       res.json(dados);
     })
     .catch(erro => {
-      console.log("erro ao achar o produto com id")
+      console.log("erro ao pegar produtos: ", erro)
     })
 });
+
+server.get("/delete/:id", (req, res) => {
+  let idDigitado = req.params.id;
+  Produto.destroy({ where: { id: `${idDigitado}` }})
+  res.send("Exclusão bem sucedida");
+});
+
+server.get("/update/:id/:nome/:preco/:quantidade/:descricao", (req, res) => {
+  let idDig = req.params.id;
+  let nomeDig = req.params.nome;
+  let precoDig = req.params.preco;
+  let quantidadeDig = req.params.quantidade;
+  let descricaoDig = req.params.descricao;
+  Produto.update(
+      { 
+        nome: nomeDig,
+        preco: precoDig,
+        quantidade: quantidadeDig,
+        descricao: descricaoDig
+       },
+      { where: { id: idDig } })
+  res.send("atualização bem sucedida");
+})
 
 
 // Inicia o server na porta 3030
