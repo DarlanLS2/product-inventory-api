@@ -13,7 +13,7 @@ conexaoSequelize.authenticate()
     console.log('Conexão com banco: ok');
   })
   .catch(err => {
-    console.error('Conexão com banco: erro');
+    console.error('Conexão com banco:' + err);
   });
 
 
