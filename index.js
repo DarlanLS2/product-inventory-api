@@ -9,11 +9,11 @@ const server = express(); // Instância do express
 server.use(cors());
 
 class ProductApi {
-  constructor(port) {
-    this.port = port;
+  constructor() {
+    this.defaultPort = 3000;
     this.logMessage =  `
     ------------------------
-    PORTA: ${this.port}
+    PORTA: 3000
     ------------------------
     Conexão com o server: ok
     ------------------------
@@ -22,11 +22,11 @@ class ProductApi {
 
   initServer() {
     this.createRoutes();
-    this.openPort(this.port);
+    this.openPort();
   }
 
-  openPort(port) {
-    server.listen(port, () => this.showLogMessage());
+  openPort() {
+    server.listen(this.defaultPort, () => this.showLogMessage());
   }
 
   showLogMessage() {
@@ -35,9 +35,9 @@ class ProductApi {
 
   createRoutes() {
     this.createRouteFindAllProducts()
-    this.createRouteRegisterProduct()
+    this.setupRouteRegisterProduct()
     this.createRouteSearchProduct();
-    this.createRouteDeleteProduct();
+    this.setupRouteDeleteProduct();
     this.createRouteUpdateProduct();
   }
 
@@ -53,16 +53,31 @@ class ProductApi {
     });
   }
 
-  createRouteRegisterProduct() {
-    server.get("/produto/:nome/:preco/:quantidade/:descricao", (req, res) => {
-      Produto.create({
-        nome: req.params.nome,
-        preco: req.params.preco,
-        quantidade: req.params.quantidade,
-        descricao: req.params.descricao,
-      })
-      res.send("produto cadastrado com sucesso")
+  async setupRouteRegisterProduct() {
+    server.post("/product/:nome/:preco/:quantidade/:descricao", async (req, res) => {
+      await this.handleRegisterProduct(req, res);
     });
+  }
+
+  async handleRegisterProduct(req, res) {
+    try {
+      await this.registerProduct(req)
+      res.status(200).send({message: "Produto registrado com sucesso"})
+    } catch (err) {
+      res.status(500).send({erro: err})
+    }
+  }
+
+  async registerProduct(req) {
+    let isCreated = await Produto.create({
+      nome: req.params.nome,
+      preco: req.params.preco,
+      quantidade: req.params.quantidade,
+      descricao: req.params.descricao,
+    });
+    if (!isCreated) {
+      throw new Eror("Erro ao cadastrar produto");
+    }
   }
   
   createRouteSearchProduct() {
@@ -78,16 +93,30 @@ class ProductApi {
     });
   }
 
-  createRouteDeleteProduct() {
-    server.get("/delete/:id", (req, res) => {
-      let idDigitado = req.params.id;
-      Produto.destroy({ where: { id: `${idDigitado}` }})
-      res.send("Exclusão bem sucedida");
+  async setupRouteDeleteProduct() {
+    server.delete("/product/:id", async (req, res) => {
+      await this.handleDeleteProduct(req, res);
     });
   }
-  
+
+  async handleDeleteProduct(req, res) {
+    try {
+      await this.deleteProduct(req.params.id);
+      res.status(200).send({message: "Produto excluido com sucesso"});
+    } catch (erro) {
+      res.status(500).send({erro: erro.message})
+    }
+  }
+
+  async deleteProduct(productId) {
+    let isDeleted = await Produto.destroy({where: {id: `${productId}`}})
+    if (isDeleted == 0) {
+      throw new Error("Erro ao deletar produto");
+    }
+  }
+
   createRouteUpdateProduct() {
-    server.get("/update/:id/:nome/:preco/:quantidade/:descricao", (req, res) => {
+    server.put("/update/:id/:nome/:preco/:quantidade/:descricao", (req, res) => {
       let idDig = req.params.id;
       let nomeDig = req.params.nome;
       let precoDig = req.params.preco;
@@ -100,12 +129,13 @@ class ProductApi {
           quantidade: quantidadeDig,
           descricao: descricaoDig
         },
-        { where: { id: idDig } })
+        { where: { id: idDig } }
+      )
       res.send("atualização bem sucedida");
     })
   }
 }
 
-const api = new ProductApi(port);
+const api = new ProductApi();
 api.initServer();
 
