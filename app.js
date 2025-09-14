@@ -1,5 +1,5 @@
 import express from "express";
-import {Product} from "./banco_de_dados/conexao_com_sequelize.js"
+import { Product } from "./models/index.js";
 import path from "path"; // Importa o módulo path
 import cors from "cors";
 
@@ -7,6 +7,7 @@ const __dirname = path.resolve(); // Define __dirname corretamente
 const server = express(); // Instância do express
 
 server.use(cors());
+
 
 class ProductApi {
   constructor() {
