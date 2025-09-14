@@ -1,5 +1,5 @@
-import express from "express"; 
-import {Produto} from "./banco_de_dados/conexao_com_sequelize.js" 
+import express from "express";
+import {Product} from "./banco_de_dados/conexao_com_sequelize.js"
 import path from "path"; // Importa o módulo path
 import cors from "cors";
 
@@ -11,13 +11,6 @@ server.use(cors());
 class ProductApi {
   constructor() {
     this.defaultPort = 3000;
-    this.logMessage =  `
-    ------------------------
-    PORTA: 3000
-    ------------------------
-    Conexão com o server: ok
-    ------------------------
-    `;
   }
 
   initServer() {
@@ -25,32 +18,59 @@ class ProductApi {
     this.openPort();
   }
 
-  openPort() {
-    server.listen(this.defaultPort, () => this.showLogMessage());
-  }
-
-  showLogMessage() {
-    console.log(this.logMessage);
-  }
-
   createRoutes() {
-    this.createRouteFindAllProducts()
+    this.setupRouteFindAllProducts()
+    this.setupRouteGetProduct();
     this.setupRouteRegisterProduct()
-    this.createRouteSearchProduct();
+    this.setupRouteUpdateProduct();
     this.setupRouteDeleteProduct();
-    this.createRouteUpdateProduct();
   }
 
-  createRouteFindAllProducts() {
-    server.get("/", (req, res) => {
-      Produto.findAll()
-        .then(dados => {
-          res.json(dados);
-        })
-        .catch(erro => {
-          console.log("erro ao pegar produtos: ", erro)
-        })
+  async setupRouteFindAllProducts() {
+    server.get("/", async (req, res) => {
+      await this.handleGetAllProducts(req, res)
     });
+  }
+
+  async handleGetAllProducts(req, res) {
+    try {
+      let productsData = await this.getAllProducts();
+      res.status(200).json(productsData)
+    } catch(erro) {
+      res.status(500).send({error: erro.message})
+    }
+  }
+
+  async getAllProducts() {
+    try {
+      const productsData = await Product.findAll();
+      return productsData;
+    } catch (erro) {
+      throw new Error(erro.message);
+    }
+  }
+  
+  async setupRouteGetProduct() {
+    server.get("/product/:id", async (req, res) => {
+      await this.handleGetProduct(req, res);
+    });
+  }
+
+  async handleGetProduct(req, res) {
+    try {
+      let productData = await this.getProduct(req.params.id);
+      res.status(200).json(productData)
+    } catch (err) {
+      res.status(500).send({erro: err})
+    }
+  }
+
+  async getProduct(id) {
+    try{
+      return await Product.findOne({ where: {id: id}});
+    } catch (err) {
+      throw new Error("Erro ao buscar produto");
+    }
   }
 
   async setupRouteRegisterProduct() {
@@ -69,7 +89,7 @@ class ProductApi {
   }
 
   async registerProduct(req) {
-    let isCreated = await Produto.create({
+    let isCreated = await Product.create({
       nome: req.params.nome,
       preco: req.params.preco,
       quantidade: req.params.quantidade,
@@ -79,18 +99,44 @@ class ProductApi {
       throw new Eror("Erro ao cadastrar produto");
     }
   }
-  
-  createRouteSearchProduct() {
-    server.get("/consulta/:id", (req, res) => {
-      let idDigitado = req.params.id;
-      Produto.findOne({ where: {id: idDigitado}})
-        .then(dados => {
-          res.json(dados);
-        })
-        .catch(erro => {
-          console.log("erro ao pegar produtos: ", erro)
-        })
-    });
+
+  async setupRouteUpdateProduct() {
+    server.put("/update/:id/:name/:price/:quantity/:description", async (req, res) => {
+      await this.handleUpdateProdut(req, res);
+    })
+  }
+
+  async handleUpdateProdut(req, res) {
+    try {
+      let productId = req.params.id;
+      let newProcuctData = {
+        name: req.params.name,
+        price: req.params.price,
+        quantity: req.params.quantity,
+        description: req.params.description
+      };
+
+      await this.updateProduct(productId, newProcuctData);
+      res.status(200).send({message: "Product atualizado com sucesso"})
+    } catch (err) {
+      res.status(500).send({erro: err})
+    }
+  }
+
+  async updateProduct(productId, newProductData) {
+    try {
+      await Product.update(
+        {
+          nome: newProductData.name,
+          preco: newProductData.price,
+          quantidade: newProductData.quantity,
+          descricao: newProductData.description
+        },
+        { where: { id: productId } }
+      )
+    } catch (err) {
+      throw new Error("Erro ao atualizar Produto")
+    }
   }
 
   async setupRouteDeleteProduct() {
@@ -109,30 +155,25 @@ class ProductApi {
   }
 
   async deleteProduct(productId) {
-    let isDeleted = await Produto.destroy({where: {id: `${productId}`}})
+    let isDeleted = await Product.destroy({where: {id: `${productId}`}})
     if (isDeleted == 0) {
       throw new Error("Erro ao deletar produto");
     }
   }
 
-  createRouteUpdateProduct() {
-    server.put("/update/:id/:nome/:preco/:quantidade/:descricao", (req, res) => {
-      let idDig = req.params.id;
-      let nomeDig = req.params.nome;
-      let precoDig = req.params.preco;
-      let quantidadeDig = req.params.quantidade;
-      let descricaoDig = req.params.descricao;
-      Produto.update(
-        { 
-          nome: nomeDig,
-          preco: precoDig,
-          quantidade: quantidadeDig,
-          descricao: descricaoDig
-        },
-        { where: { id: idDig } }
-      )
-      res.send("atualização bem sucedida");
-    })
+
+  openPort() {
+    server.listen(this.defaultPort, () => this.showLogMessage());
+  }
+
+  showLogMessage() {
+    console.log(`
+      ------------------------\n
+      PORTA: 3000\n
+      ------------------------\n
+      Conexãaaao com o server: ok\n
+      ------------------------\n
+      `);
   }
 }
 
