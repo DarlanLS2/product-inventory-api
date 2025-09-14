@@ -18,7 +18,7 @@ conexaoSequelize.authenticate()
 
 
 // Cria o model produto
-const Produto = conexaoSequelize.define( "produto", {
+const Product = conexaoSequelize.define( "produto", {
     nome: {
         type: DataTypes.STRING,
         allowNull: false
@@ -38,7 +38,7 @@ const Produto = conexaoSequelize.define( "produto", {
 })
 
 
-// Produto.sync({ force: true }); // roda este codigo so uma vez se nao vai ficar criando novas tabelas 
+// Product.sync({ force: true }); // roda este codigo so uma vez se nao vai ficar criando novas tabelas 
 
 // exportando os models das tabelas
-export {Produto};
+export {Product};
