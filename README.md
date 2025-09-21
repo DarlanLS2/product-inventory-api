@@ -15,13 +15,22 @@ This is the backend API for the [Product Inventory Frontend](https://github.com/
 - MySQL
 
 ## 📦 Installation
-1. Clone the repositori: 
-  git clone https://github.com/DarlanLS2/product-inventory-api
+1. Clone the repository:
+```bash
+git clone https://github.com/DarlanLS2/product-inventory-api
+```
 2. Navigate into the project folder:
-  cd product-inventory-api
+```bash
+cd product-inventory-api
+```
 3. Start MySQL and create a database named loja.
 4. Uncomment line 41 in ./banco_de_dados/conexao_com_sequelize.js
 5. Run the API:
-  node app.js
+```bash
+node app.js
+```
+## ⚙️ Notes
+- Make sure your MySQL server is running before starting the API.
+- Adjust the database credentials in the Sequelize connection file if needed.
 
 
