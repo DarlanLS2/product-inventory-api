@@ -1,6 +1,6 @@
 # Product Inventory – API
 
-This is the backend API for the [Product Inventory Frontend](https://github.com/your-user/product-inventory-frontend).
+This is the backend API for the [Product Inventory Frontend](https://github.com/DarlanLS2/product-inventory-frontend).
 
 ## ✨ Features
 - Product registration
