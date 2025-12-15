@@ -1,13 +1,13 @@
 import express from "express";
-import path from "path"; // Importa o módulo path
+import path from "path";
 import cors from "cors";
 import { ProductRepository } from "./src/repositories/productRepository.js";
 import { ProductService } from "./src/services/productService.js";
 import { ProductController } from "./src/controllers/productController.js";
 import { ProductRoute } from "./src/routes/productRoute.js";
 
-const __dirname = path.resolve(); // Define __dirname corretamente
-const server = express(); // Instância do express
+const __dirname = path.resolve(); 
+const server = express(); 
 
 server.use(cors());
 server.use(express.json());
