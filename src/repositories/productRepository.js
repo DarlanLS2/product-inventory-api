@@ -1,9 +1,11 @@
-import { Product } from "../models/productModel.js";
-
 export class ProductRepository {
+  constructor(Product) {
+    this.Product = Product
+  }
+
   async getAll() {
     try {
-      return await Product.findAll();
+      return await this.Product.findAll();
     } catch {
       throw new Error("Erro na requisição do findAll()");
     }
@@ -11,14 +13,14 @@ export class ProductRepository {
 
   async getById(id) {
     try{
-      return await Product.findOne({ where: {id: id}});
+      return await this.Product.findOne({ where: {id: id}});
     } catch {
       throw new Error("Erro na requisição findOne()");
     }
   }
   
   async register(infos) {
-    let isCreated = await Product.create({
+    let isCreated = await this.Product.create({
       nome: infos.name,
       preco: infos.price,
       quantidade: infos.quantity,
@@ -32,7 +34,7 @@ export class ProductRepository {
 
   async update(infos) {
     try {
-      await Product.update(
+      await this.Product.update(
         {
           nome: infos.name,
           preco: infos.price,
@@ -47,7 +49,7 @@ export class ProductRepository {
   }
 
   async delete(id) {
-    let isDeleted = await Product.destroy({where: {id: id}})
+    let isDeleted = await this.Product.destroy({where: {id: id}})
 
     if (isDeleted == 0) {
       throw new Error("Erro na requisição destroy()");

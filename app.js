@@ -1,6 +1,7 @@
 import express from "express";
 import path from "path";
 import cors from "cors";
+import { Product } from "./src/models/productModel.js"
 import { ProductRepository } from "./src/repositories/productRepository.js";
 import { ProductService } from "./src/services/productService.js";
 import { ProductController } from "./src/controllers/productController.js";
@@ -12,7 +13,7 @@ const server = express();
 server.use(cors());
 server.use(express.json());
 
-const repository = new ProductRepository()
+const repository = new ProductRepository(Product)
 const service = new ProductService(repository)
 const controller = new ProductController(service)
 const route = new ProductRoute(server, controller)
