@@ -3,18 +3,26 @@
   "version": "1.0.0",
   "description": "teste api",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "nodemon ./index.js"
   },
   "author": "",
   "license": "ISC",
-  "type": "module",
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.21.0",
     "mysql2": "^3.11.3",
     "nodemon": "^3.1.7",
+    "jest": "^30.2.0",
+    "@babel/preset-env": "^7.28.5",
+    "babel-jest": "^30.2.0",
     "sequelize": "^6.37.4"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.[tj]sx?$": "babel-jest"
+    }
   }
 }
