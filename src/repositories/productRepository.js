@@ -1,11 +1,11 @@
 export class ProductRepository {
-  constructor(Product) {
-    this.Product = Product
+  constructor(ProductModel) {
+    this.productModel = ProductModel
   }
 
   async getAll() {
     try {
-      return await this.Product.findAll();
+      return await this.productModel.findAll();
     } catch {
       throw new Error("Erro ao acessar o banco");
     }
@@ -13,35 +13,35 @@ export class ProductRepository {
 
   async getById(id) {
     try{
-      return await this.Product.findOne({ where: {id: id}});
+      return await this.productModel.findOne({ where: {id: id}});
     } catch {
       throw new Error("Erro ao acessar o banco");
     }
   }
   
-  async register(infos) {
+  async register(product) {
     try {
-      return await this.Product.create({
-        nome: infos.name,
-        preco: infos.price,
-        quantidade: infos.quantity,
-        descricao: infos.description
+      return await this.productModel.create({
+        nome: product.name,
+        preco: product.price,
+        quantidade: product.quantity,
+        descricao: product.description
       });
     } catch {
       throw new Error("Erro ao acessar o banco");
     }
   }
 
-  async update(infos) {
+  async update(product) {
     try {
-      return await this.Product.update(
+      return await this.productModel.update(
         {
-          nome: infos.name,
-          preco: infos.price,
-          quantidade: infos.quantity,
-          descricao: infos.description
+          nome: product.name,
+          preco: product.price,
+          quantidade: product.quantity,
+          descricao: product.description
         },
-        { where: { id: infos.id } }
+        { where: { id: product.id } }
       )
     } catch {
       throw new Error("Erro ao acessar o banco")
@@ -50,7 +50,7 @@ export class ProductRepository {
 
   async delete(id) {
     try {
-      return await this.Product.destroy({where: {id: id}})
+      return await this.productModel.destroy({where: {id: id}})
     } catch {
       throw new Error("Erro ao acessar o banco")
     }
