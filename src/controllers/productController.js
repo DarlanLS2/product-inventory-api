@@ -46,9 +46,12 @@ export class ProductController {
   async register(req, res) {
     try {
       const product = new Product(req.body)
+      const createdProduct = await this.repository.register(product)
 
-      await this.repository.register(product)
-      res.status(200).send({message: "Produto registrado com sucesso"})
+      res.status(200).send({
+        message: "Produto criado com sucesso",
+        product: createdProduct
+      })
     } catch (error) {
       if (error instanceof ValidationError) {
         res.status(400).send({error: error.message})
@@ -61,12 +64,17 @@ export class ProductController {
   async update(req, res) {
     try {
       const product = new Product(req.body);
-      product.setId(req.body.id);
+      const updatedProduct = await this.repository.update(product);
 
-      await this.repository.update(product);
+      if (updatedProduct[0] < 1) {
+        throw new NotFoundError("Produto não encontrado")
+      }
+
       res.status(200).send({message: "Producto atualizado com sucesso"})
     } catch (error) {
       if (error instanceof ValidationError) {
+        res.status(400).send({error: error.message})
+      } else if (error instanceof NotFoundError) {
         res.status(400).send({error: error.message})
       } else {
         res.status(500).send({error: error.message})
@@ -78,8 +86,8 @@ export class ProductController {
     try {
       const product = await this.repository.delete(req.params.id);
 
-      if (product.lengt < 1) {
-        throw new NotFoundError("Este produto não existe")
+      if (product < 1) {
+        throw new NotFoundError("Produto não encontrado")
       }
 
       res.status(200).send({message: "Produto excluido com sucesso"});

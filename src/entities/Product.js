@@ -7,15 +7,15 @@ export class Product {
     this.#validateQuantity(fields.quantity);
     this.#validateDescription(fields.description);
 
-    this.id = null
+    if (fields.id == null) {
+      this.id = null;
+    } else {
+      this.id = fields.id;
+    }
     this.name = fields.name;
     this.price = fields.price;
     this.quantity = fields.quantity;
     this.description = fields.description;
-  }
-
-  setId(id) {
-    this.id = id;
   }
 
   #validateName(name) {
