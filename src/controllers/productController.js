@@ -1,4 +1,4 @@
-import { ProductInputValidator } from "../utils/productInputValidator.js"
+import { Product } from "../entities/Product.js"
 
 export class ProductController {
   constructor(productRepository) {
@@ -9,8 +9,8 @@ export class ProductController {
     try {
       let productsData = await this.repository.getAll();
       res.status(200).json(productsData)
-    } catch(erro) {
-      res.status(500).send({error: erro.message})
+    } catch(err) {
+      res.status(500).send({error: err.message})
     }
   }
 
@@ -19,34 +19,30 @@ export class ProductController {
       let productData = await this.repository.getById(req.params.id);
       res.status(200).json(productData)
     } catch (err) {
-      res.status(500).send({erro: err})
+      res.status(500).send({erro: err.message})
     }
   }
 
   async register(req, res) {
     try {
-      const invalidFields = ProductInputValidator.isFieldsValid(req.body)
+      const product = new Product(req.body)
 
-      if (invalidFields.length > 0) {
-        return res.status(400).send({
-          erro: "Campo invalido",
-          invalidFields: invalidFields
-        })
-      }
-
-      await this.repository.register(req.body)
+      await this.repository.register(product)
       res.status(200).send({message: "Produto registrado com sucesso"})
     } catch (err) {
-      res.status(500).send({erro: err})
+      res.status(500).send({erro: err.message})
     }
   }
 
   async update(req, res) {
     try {
-      await this.repository.update(req.body);
-      res.status(200).send({message: "Product atualizado com sucesso"})
+      const product = new Product(req.body);
+      product.setId(req.body.id);
+
+      await this.repository.update(product);
+      res.status(200).send({message: "Producto atualizado com sucesso"})
     } catch (err) {
-      res.status(500).send({erro: err})
+      res.status(500).send({erro: err.message})
     }
   }
 

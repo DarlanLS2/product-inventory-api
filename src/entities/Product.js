@@ -23,7 +23,7 @@ export class Product {
       throw new Error("Nome invalido");
     }
 
-    if (regex.test(name)) {
+    if (!regex.test(name)) {
       throw new Error("Nome invalido");
     }
   }
@@ -35,7 +35,7 @@ export class Product {
       throw new Error("Preço invalido");
     } 
 
-    if (regex.test(price)) {
+    if (!regex.test(price)) {
       throw new Error("Preço invalido");
     }
   }
@@ -48,7 +48,7 @@ export class Product {
       throw new Error("Quantidade invalida");
     } 
 
-    if (regex.test(quantity)) {
+    if (!regex.test(quantity)) {
       throw new Error("Quantidade invalida");
     }
   }
@@ -60,7 +60,7 @@ export class Product {
       throw new Error("Descrição invalida");
     }
 
-    if (regex.test(description)) {
+    if (!regex.test(description)) {
       throw new Error("Descrição invalida")
     }
   }
