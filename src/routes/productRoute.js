@@ -5,7 +5,7 @@ export class ProductRoute {
   }
 
   createRoutes() {
-    this.server.get("/", async (req, res) => {
+    this.server.get("/product", async (req, res) => {
       await this.controller.getAll(req, res)
     });
     this.server.get("/product/:id", async (req, res) => {
