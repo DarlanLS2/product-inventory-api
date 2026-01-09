@@ -51,7 +51,7 @@ export class ProductController {
       const createdProduct = await this.repository.register(product)
 
       res.set('Cache-Control', 'no-store')
-      res.status(200).send({
+      res.status(201).send({
         message: "Produto criado com sucesso",
         product: createdProduct
       })
@@ -73,8 +73,9 @@ export class ProductController {
         throw new NotFoundError("Produto não encontrado")
       }
 
-      res.set('Cache-Control', 'no-store')
-      res.status(200).send({message: "Producto atualizado com sucesso"})
+      res.set('Cache-Control', 'no-store');
+      res.status(204);
+      res.end();
     } catch (error) {
       if (error instanceof ValidationError) {
         res.status(400).send({error: error.message})
@@ -95,7 +96,8 @@ export class ProductController {
       }
 
       res.set('Cache-Control', 'no-store')
-      res.status(200).send({message: "Produto excluido com sucesso"});
+      res.status(204);
+      res.end();
     } catch (error) {
       if (error instanceof NotFoundError) {
         res.status(400).send({error: error.message})
