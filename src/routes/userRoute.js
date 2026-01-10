@@ -11,9 +11,6 @@ export class ProductRoute {
     this.server.post("/user", async (req, res) => {
       await this.controller.register(req, res);
     });
-    this.server.put("/user/:id", async (req, res) => {
-      await this.controller.update(req, res);
-    })
     this.server.delete("/user/:id", async (req, res) => {
       await this.controller.delete(req, res);
     });

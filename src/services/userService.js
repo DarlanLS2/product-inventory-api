@@ -20,8 +20,6 @@ export class UserService {
     return await this.repository.register(user);
   }
 
-  async update(body) {}
-
   async delete(id) {
     return await this.repository.delete(id);
   }

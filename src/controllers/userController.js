@@ -42,28 +42,6 @@ export class UserController {
     }
   }
 
-  async update(req, res) {
-    try {
-      const updatedUser = await this.service.update(req.body);
-
-      if (updatedUser[0] < 1) {
-        throw new NotFoundError("Usuario não encontrado")
-      }
-
-      res.set('Cache-Control', 'no-store');
-      res.status(204);
-      res.end();
-    } catch (error) {
-      if (error instanceof ValidationError) {
-        res.status(400).send({error: error.message})
-      } else if (error instanceof NotFoundError) {
-        res.status(400).send({error: error.message})
-      } else {
-        res.status(500).send({error: error.message})
-      }
-    }
-  }
-
   async delete(req, res) {
     try {
       const user = await this.service.delete(req.params.id);
