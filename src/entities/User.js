@@ -2,6 +2,7 @@ export class User {
   constructor(fields) {
     this.#validateEmail(fields.email);
 
+    this.id = fields.id == null ? null : fields.id;
     this.email = fields.email;
     this.passWordHash = fields.passWordHash;
   }
