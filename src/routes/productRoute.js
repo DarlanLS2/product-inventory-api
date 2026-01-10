@@ -4,7 +4,7 @@ export class ProductRoute {
     this.server = server;
   }
 
-  createRoutes() {
+  create() {
     this.server.get("/product", async (req, res) => {
       await this.controller.getAll(req, res)
     });
