@@ -13,6 +13,7 @@ export class UserService {
     const encryptedPassWord = await PassWordEncryptor.encrypt(body.passWord)
 
     const user = new User({
+      id: null,
       email: body.email,
       passWordHash: encryptedPassWord
     })
