@@ -12,10 +12,10 @@ const server = express();
 server.use(cors());
 server.use(express.json());
 
-const repository = new ProductRepository(Product)
-const controller = new ProductController(repository)
-const route = new ProductRoute(server, controller)
-route.createRoutes()
+const productRepository = new ProductRepository(Product)
+const productController = new ProductController(productRepository)
+const productRoutes = new ProductRoute(server, productController)
+productRoutes.create()
 
 server.listen(3000, () => {
   console.log(`
