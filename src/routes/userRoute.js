@@ -6,7 +6,7 @@ export class ProductRoute {
 
   create() {
     this.server.get("/user/:email", async (req, res) => {
-      await this.controller.getUserByEmail(req, res);
+      await this.controller.getByEmail(req, res);
     });
     this.server.post("/user", async (req, res) => {
       await this.controller.register(req, res);
