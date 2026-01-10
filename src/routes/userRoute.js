@@ -1,4 +1,4 @@
-export class ProductRoute {
+export class UserRoute {
   constructor(server, userController) {
     this.controller = userController
     this.server = server;
