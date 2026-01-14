@@ -18,6 +18,9 @@ const server = express();
 server.use(cors());
 server.use(express.json());
 
+// Product.sync({ force: true })
+// User.sync({ force: true })
+
 const userRepository = new UserRepository(User);
 const userService = new UserService(userRepository);
 const userController = new UserController(userService);

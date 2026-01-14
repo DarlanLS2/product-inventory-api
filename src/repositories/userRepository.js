@@ -26,12 +26,12 @@ export class UserRepository {
         passWordHash: user.passWordHash
       });
 
-      return new user({
+      return new User({
         id: createdUser.id,
         email: createdUser.email,
         passWordHash: createdUser.passWordHash
       })
-    } catch {
+    } catch (error) {
       throw new Error("Erro ao acessar o banco");
     }
   }
