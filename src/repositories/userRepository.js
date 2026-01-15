@@ -41,11 +41,7 @@ export class UserRepository {
         passWordHash: createdUser.passWordHash
       })
     } catch (error) {
-      if (error instanceof ValidationError) {
-        throw new ValidationError()
-      } else {
-        throw new Error("Erro ao acessar o banco");
-      }
+      throw new Error("Erro ao acessar o banco");
     }
   }
 

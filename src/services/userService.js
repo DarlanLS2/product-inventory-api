@@ -12,7 +12,12 @@ export class UserService {
     const mockToken = "asfafa311241hsda2341"
     
     if (isValid) {
-      return mockToken;
+      return {
+        id: user.id,
+        email: user.email,
+        passWord: body.passWord,
+        token: mockToken
+      };
     } else {
       return null
     }
