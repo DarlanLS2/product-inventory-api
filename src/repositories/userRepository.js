@@ -1,4 +1,5 @@
 import { User } from "../entities/User.js";
+import { ValidationError } from "../errors/ValidationError.js";
 
 export class UserRepository {
   constructor(UserModel) {
@@ -14,8 +15,12 @@ export class UserRepository {
         email: user.email,
         passWordHash: user.passWordHash
       });
-    } catch {
-      throw new Error("Erro ao acessar o banco");
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        throw new ValidationError("Email ou senha invalidos")
+      } else {
+        throw new Error("Erro ao acessar o banco");
+      }
     }
   }
   
@@ -32,7 +37,11 @@ export class UserRepository {
         passWordHash: createdUser.passWordHash
       })
     } catch (error) {
-      throw new Error("Erro ao acessar o banco");
+      if (error instanceof ValidationError) {
+        throw new ValidationError("Email ou senha invalidos")
+      } else {
+        throw new Error("Erro ao acessar o banco");
+      }
     }
   }
 
