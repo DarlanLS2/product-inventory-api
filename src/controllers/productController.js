@@ -46,7 +46,7 @@ export class ProductController {
       res.status(201).json(createdProduct)
     } catch (error) {
       if (error instanceof ValidationError) {
-        res.status(400).send({error: error.message})
+        res.status(400).send({ field: error.field, message: error.message })
       } else {
         res.status(500).send({error: error.message})
       }
@@ -67,7 +67,7 @@ export class ProductController {
       res.end();
     } catch (error) {
       if (error instanceof ValidationError) {
-        res.status(400).send({error: error.message})
+        res.status(400).send({ field: error.field, message: error.message })
       } else if (error instanceof NotFoundError) {
         res.status(404).send({error: error.message})
       } else {
