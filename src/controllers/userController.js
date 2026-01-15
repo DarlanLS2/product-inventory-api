@@ -11,12 +11,12 @@ export class UserController {
 
       if (user == null) throw new ValidationError() 
 
-      res.status(200).send(user)
+      res.status(200).json(user)
     } catch (error) {
       if (error instanceof ValidationError) {
-        res.status(400).send({ field: "email or passWord", message: "invalid"})
+        res.status(400).json({ field: "email or passWord", message: "invalid"})
       } else {
-        res.status(500).send({ error: error.message })
+        res.status(500).json({ error: error.message })
       }
     }
   }
@@ -33,9 +33,9 @@ export class UserController {
       })
     } catch (error) {
       if (error instanceof ValidationError) {
-        res.status(400).send({ field: error.field, message: error.message })
+        res.status(400).json({ field: error.field, message: error.message })
       } else {
-        res.status(500).send({error: error.message})
+        res.status(500).json({ error: error.message })
       }
     }
   }
@@ -49,13 +49,12 @@ export class UserController {
       }
 
       res.set('Cache-Control', 'no-store')
-      res.status(204);
-      res.end();
+      res.sendStatus(204);
     } catch (error) {
       if (error instanceof ValidationError) {
-        res.status(400).send({ field: "email or passWord", message: "invalid"})
+        res.status(400).json({ field: "email or passWord", message: "invalid"})
       } else {
-        res.status(500).send({error: error.message})
+        res.status(500).json({ error: error.message })
       }
     }
   }

@@ -14,7 +14,7 @@ export class ProductController {
       res.set('Cache-Control', 'private, max-age=5, must-revalidate')
       res.status(200).json(products)
     } catch (error) {
-      res.status(500).send({ error: error.message })
+      res.status(500).json({ error: error.message })
     }
   }
 
@@ -32,7 +32,7 @@ export class ProductController {
       if (error instanceof NotFoundError) {
         res.sendStatus(404)
       } else {
-        res.status(500).send({ error: error.message })
+        res.status(500).json({ error: error.message })
       }
     }
   }
@@ -46,9 +46,9 @@ export class ProductController {
       res.status(201).json(createdProduct)
     } catch (error) {
       if (error instanceof ValidationError) {
-        res.status(400).send({ field: error.field, message: error.message })
+        res.status(400).json({ field: error.field, message: error.message })
       } else {
-        res.status(500).send({ error: error.message })
+        res.status(500).json({ error: error.message })
       }
     }
   }
@@ -66,11 +66,11 @@ export class ProductController {
       res.sendStatus(204);
     } catch (error) {
       if (error instanceof ValidationError) {
-        res.status(400).send({ field: error.field, message: error.message })
+        res.status(400).json({ field: error.field, message: error.message })
       } else if (error instanceof NotFoundError) {
         res.sendStatus(404)
       } else {
-        res.status(500).send({ error: error.message })
+        res.status(500).json({ error: error.message })
       }
     }
   }
@@ -89,7 +89,7 @@ export class ProductController {
       if (error instanceof NotFoundError) {
         res.sendStatus(404)
       } else {
-        res.status(500).send({ error: error.message })
+        res.status(500).json({ error: error.message })
       }
     }
   }
