@@ -1,0 +1,55 @@
+import { User } from "../entities/User.js";
+import { ValidationError } from "../errors/ValidationError.js";
+
+export class UserRepository {
+  constructor(UserModel) {
+    this.userModel = UserModel
+  }
+
+  async getByEmail(email) {
+    try{
+      const user = await this.userModel.findOne({ where: {email: email}});
+
+      if (user == null) {
+        throw new ValidationError()
+      } else {
+        return new User({
+          id: user.id,
+          email: user.email,
+          passWordHash: user.passWordHash
+        });
+      }
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        throw new ValidationError()
+      } else {
+        throw new Error("Erro ao acessar o banco");
+      }
+    }
+  }
+  
+  async register(user) {
+    try {
+      const createdUser = await this.userModel.create({
+        email: user.email,
+        passWordHash: user.passWordHash
+      });
+
+      return new User({
+        id: createdUser.id,
+        email: createdUser.email,
+        passWordHash: createdUser.passWordHash
+      })
+    } catch (error) {
+      throw new Error("Erro ao acessar o banco");
+    }
+  }
+
+  async delete(id) {
+    try {
+      return await this.userModel.destroy({where: {id: id}})
+    } catch {
+      throw new Error("Erro ao acessar o banco")
+    }
+  }
+}
