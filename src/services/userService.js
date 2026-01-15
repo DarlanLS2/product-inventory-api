@@ -1,6 +1,7 @@
 import { PassWordEncryptor } from "../utils/PassWordEncryptor.js";
 import { User } from "../entities/User.js";
 import jwt from "jsonwebtoken"
+import { ValidationError } from "../errors/ValidationError.js";
 
 export class UserService {
   constructor(userRepository) {
@@ -9,6 +10,11 @@ export class UserService {
 
   async login(body) {
     const user = await this.repository.getByEmail(body.email);
+
+    if (!user) {
+      throw new ValidationError()
+    }
+
     const isPassWordValid = await PassWordEncryptor.check(
       body.passWord, 
       user.passWordHash

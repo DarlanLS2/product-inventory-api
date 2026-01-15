@@ -10,16 +10,14 @@ export class UserController {
     try {
       const user = await this.service.login(req.body)
 
-      if (user == null) {
-        res.status(400).send({error: "email ou senha invalidos"})
-      } else {
-        res.status(200).send(user)
-      }
+      if (user == null) throw new ValidationError() 
+
+      res.status(200).send(user)
     } catch (error) {
       if (error instanceof ValidationError) {
-        res.status(400).send({error: "Email ou senha invalidos"})
+        res.status(400).send({ field: "email or passWord", message: "invalid"})
       } else {
-        res.status(500).send({error: error.message})
+        res.status(500).send({ error: error.message })
       }
     }
   }
