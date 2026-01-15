@@ -7,27 +7,19 @@ export class UserRepository {
   }
 
   async getByEmail(email) {
-    try{
-      const user = await this.userModel.findOne({ where: {email: email}});
+    const user = await this.userModel.findOne({ where: { email: email }});
 
-      if (user == null) {
-        throw new ValidationError()
-      } else {
-        return new User({
-          id: user.id,
-          email: user.email,
-          passWordHash: user.passWordHash
-        });
-      }
-    } catch (error) {
-      if (error instanceof ValidationError) {
-        throw new ValidationError()
-      } else {
-        throw new Error("Erro ao acessar o banco");
-      }
+    if (user == null) {
+      return null
     }
+
+    return new User({
+      id: user.id,
+      email: user.email,
+      passWordHash: user.passWordHash
+    });
   }
-  
+
   async register(user) {
     try {
       const createdUser = await this.userModel.create({
