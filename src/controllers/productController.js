@@ -14,7 +14,7 @@ export class ProductController {
       res.set('Cache-Control', 'private, max-age=5, must-revalidate')
       res.status(200).json(products)
     } catch (error) {
-      res.status(500).send({error: error.message})
+      res.status(500).send({ error: error.message })
     }
   }
 
@@ -32,7 +32,7 @@ export class ProductController {
       if (error instanceof NotFoundError) {
         res.sendStatus(404)
       } else {
-        res.status(500).send({error: error.message})
+        res.status(500).send({ error: error.message })
       }
     }
   }
@@ -48,7 +48,7 @@ export class ProductController {
       if (error instanceof ValidationError) {
         res.status(400).send({ field: error.field, message: error.message })
       } else {
-        res.status(500).send({error: error.message})
+        res.status(500).send({ error: error.message })
       }
     }
   }
@@ -59,19 +59,18 @@ export class ProductController {
       const updatedProduct = await this.repository.update(product);
 
       if (updatedProduct[0] < 1) {
-        throw new NotFoundError("Produto não encontrado")
+        throw new NotFoundError()
       }
 
       res.set('Cache-Control', 'no-store');
-      res.status(204);
-      res.end();
+      res.sendStatus(204);
     } catch (error) {
       if (error instanceof ValidationError) {
         res.status(400).send({ field: error.field, message: error.message })
       } else if (error instanceof NotFoundError) {
-        res.status(404).send({error: error.message})
+        res.sendStatus(404)
       } else {
-        res.status(500).send({error: error.message})
+        res.status(500).send({ error: error.message })
       }
     }
   }
