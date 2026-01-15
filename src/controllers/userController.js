@@ -44,18 +44,18 @@ export class UserController {
 
   async delete(req, res) {
     try {
-      const user = await this.service.delete(req.params.id);
+      const user = await this.service.delete(req.body);
 
-      if (user < 1) {
-        throw new NotFoundError("Usuario não encontrado")
+      if (user !== null) {
+        res.set('Cache-Control', 'no-store')
+        res.status(204);
+        res.end();
+      } else {
+        throw new ValidationError()
       }
-
-      res.set('Cache-Control', 'no-store')
-      res.status(204);
-      res.end();
     } catch (error) {
-      if (error instanceof NotFoundError) {
-        res.status(400).send({error: error.message})
+      if (error instanceof ValidationError ) {
+        res.status(400).send({error: "Email ou senha invalidos"})
       } else {
         res.status(500).send({error: error.message})
       }
