@@ -5,7 +5,7 @@ export function authMidleware(req, res, next) {
 
   if (!token) return res.status(401).json({ error: "Token invalido"})
   try {
-    const decoded = jwt.verify(token, "segredo_mockado")
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
     req.userId = decoded.sub;
 
