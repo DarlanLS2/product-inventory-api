@@ -7,6 +7,8 @@ import { UserController } from "./src/controllers/userController.js";
 import { UserService } from "./src/services/userService.js";
 import { UserRoute } from "./src/routes/userRoute.js"
 
+import { authMidleware } from "./src/authentication/authMidleware.js";
+
 import { Product } from "./src/models/productModel.js"
 import { ProductRepository } from "./src/repositories/productRepository.js";
 import { ProductController } from "./src/controllers/productController.js";
@@ -29,7 +31,7 @@ userRoutes.create();
 
 const productRepository = new ProductRepository(Product)
 const productController = new ProductController(productRepository)
-const productRoutes = new ProductRoute(server, productController)
+const productRoutes = new ProductRoute(server, authMidleware, productController)
 productRoutes.create()
 
 server.listen(3000, () => {
