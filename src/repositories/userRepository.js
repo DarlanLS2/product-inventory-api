@@ -34,10 +34,6 @@ export class UserRepository {
   }
 
   async deleteByEmail(email) {
-    try {
-      return await this.userModel.destroy({ where: { email: email }})
-    } catch {
-      throw new Error("Erro ao acessar o banco")
-    }
+    return await this.userModel.destroy({ where: { email: email }})
   }
 }

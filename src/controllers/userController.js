@@ -27,9 +27,10 @@ export class UserController {
       const createdUser = await this.service.register(req.body)
 
       res.set('Cache-Control', 'no-store')
-      res.status(201).send({
-        message: "Usuario cadastrado com sucesso",
-        user: createdUser
+      res.status(201).json({
+        id: createdUser.id,
+        email: createdUser.email,
+        passWord: req.body.passWord
       })
     } catch (error) {
       if (error instanceof ValidationError) {
@@ -44,16 +45,16 @@ export class UserController {
     try {
       const user = await this.service.delete(req.body);
 
-      if (user !== null) {
-        res.set('Cache-Control', 'no-store')
-        res.status(204);
-        res.end();
-      } else {
+      if (user == null) {
         throw new ValidationError()
       }
+
+      res.set('Cache-Control', 'no-store')
+      res.status(204);
+      res.end();
     } catch (error) {
-      if (error instanceof ValidationError ) {
-        res.status(400).send({error: "Email ou senha invalidos"})
+      if (error instanceof ValidationError) {
+        res.status(400).send({ field: "email or passWord", message: "invalid"})
       } else {
         res.status(500).send({error: error.message})
       }
