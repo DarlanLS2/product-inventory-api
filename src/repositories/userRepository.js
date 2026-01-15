@@ -10,16 +10,20 @@ export class UserRepository {
     try{
       const user = await this.userModel.findOne({ where: {email: email}});
 
-      return new User({
-        id: user.id,
-        email: user.email,
-        passWordHash: user.passWordHash
-      });
+      if (user == null) {
+        throw new ValidationError()
+      } else {
+        return new User({
+          id: user.id,
+          email: user.email,
+          passWordHash: user.passWordHash
+        });
+      }
     } catch (error) {
       if (error instanceof ValidationError) {
         throw new ValidationError("Email ou senha invalidos")
       } else {
-        throw new Error("Erro ao acessar o banco");
+        throw new Error("Erro ao acessar o banco" + error.message);
       }
     }
   }
