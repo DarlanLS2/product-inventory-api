@@ -7,8 +7,8 @@ export class UserService {
   }
 
   async login(body) {
-    const user = this.repository.getByEmail(body.email);
-    const isValid = PassWordEncryptor.check(body.passWord, user.passWordHash);
+    const user = await this.repository.getByEmail(body.email);
+    const isValid = await PassWordEncryptor.check(body.passWord, user.passWordHash);
     const mockToken = "asfafa311241hsda2341"
     
     if (isValid) {

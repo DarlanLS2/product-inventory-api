@@ -7,10 +7,16 @@ export class UserController {
   }
 
   async login(req, res) {
-    const user = await this.service.login(req.body)
+    try {
+      const token = await this.service.login(req.body)
 
-    if (user == null) {
-      // throw erro
+      if (token == null) {
+        res.status(400).send({error: "email ou senha invalidos"})
+      } else {
+        res.status(200).send({token: token})
+      }
+    } catch (error) {
+      res.status(500).send({error: error.message})
     }
   }
 
