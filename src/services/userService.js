@@ -19,7 +19,7 @@ export class UserService {
     }
 
     const token = jwt.sign(
-      { id: user.id }, 
+      { "sub": user.id },
       process.env.JWT_SECRET, 
       { expiresIn: '1h' }
     )
