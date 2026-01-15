@@ -21,20 +21,16 @@ export class UserRepository {
   }
 
   async register(user) {
-    try {
-      const createdUser = await this.userModel.create({
-        email: user.email,
-        passWordHash: user.passWordHash
-      });
+    const createdUser = await this.userModel.create({
+      email: user.email,
+      passWordHash: user.passWordHash
+    });
 
-      return new User({
-        id: createdUser.id,
-        email: createdUser.email,
-        passWordHash: createdUser.passWordHash
-      })
-    } catch (error) {
-      throw new Error("Erro ao acessar o banco");
-    }
+    return new User({
+      id: createdUser.id,
+      email: createdUser.email,
+      passWordHash: createdUser.passWordHash
+    })
   }
 
   async deleteByEmail(email) {

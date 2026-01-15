@@ -33,7 +33,7 @@ export class UserController {
       })
     } catch (error) {
       if (error instanceof ValidationError) {
-        res.status(400).send({error: error.message})
+        res.status(400).send({ field: error.field, message: error.message })
       } else {
         res.status(500).send({error: error.message})
       }
