@@ -11,18 +11,10 @@ export class ProductController {
     try {
       const products = await this.repository.getAll();
 
-      if (products.leght < 1) {
-        throw new NotFoundError("Não há produtos cadastrados")
-      }
-
       res.set('Cache-Control', 'private, max-age=5, must-revalidate')
       res.status(200).json(products)
     } catch(error) {
-      if (error instanceof NotFoundError) {
-        res.status(400).send({error: error.message})
-      } else {
-        res.status(500).send({error: error.message})
-      }
+      res.status(500).send({error: error.message})
     }
   }
 
@@ -38,7 +30,7 @@ export class ProductController {
       res.status(200).json(product)
     } catch (error) {
       if (error instanceof NotFoundError) {
-        res.status(400).send({error: error.message})
+        res.status(404).send({error: error.message})
       } else {
         res.status(500).send({error: error.message})
       }
@@ -51,10 +43,7 @@ export class ProductController {
       const createdProduct = await this.repository.register(product)
 
       res.set('Cache-Control', 'no-store')
-      res.status(201).send({
-        message: "Produto criado com sucesso",
-        product: createdProduct
-      })
+      res.status(201).json(createdProduct)
     } catch (error) {
       if (error instanceof ValidationError) {
         res.status(400).send({error: error.message})
@@ -80,7 +69,7 @@ export class ProductController {
       if (error instanceof ValidationError) {
         res.status(400).send({error: error.message})
       } else if (error instanceof NotFoundError) {
-        res.status(400).send({error: error.message})
+        res.status(404).send({error: error.message})
       } else {
         res.status(500).send({error: error.message})
       }
@@ -100,7 +89,7 @@ export class ProductController {
       res.end();
     } catch (error) {
       if (error instanceof NotFoundError) {
-        res.status(400).send({error: error.message})
+        res.status(404).send({error: error.message})
       } else {
         res.status(500).send({error: error.message})
       }
