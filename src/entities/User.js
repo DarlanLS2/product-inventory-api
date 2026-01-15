@@ -1,3 +1,5 @@
+import { ValidationError } from "../errors/ValidationError.js";
+
 export class User {
   constructor(fields) {
     this.#validateEmail(fields.email);
@@ -11,11 +13,11 @@ export class User {
     const regex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 
     if (email == null) {
-      throw new ValidationError();
+      throw new ValidationError("Email invalido");
     }
 
     if (!regex.test(email)) {
-      throw new ValidationError();
+      throw new ValidationError("Email invalido");
     }
   }
 }

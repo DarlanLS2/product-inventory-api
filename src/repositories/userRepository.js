@@ -21,9 +21,9 @@ export class UserRepository {
       }
     } catch (error) {
       if (error instanceof ValidationError) {
-        throw new ValidationError("Email ou senha invalidos")
+        throw new ValidationError()
       } else {
-        throw new Error("Erro ao acessar o banco" + error.message);
+        throw new Error("Erro ao acessar o banco");
       }
     }
   }
@@ -42,7 +42,7 @@ export class UserRepository {
       })
     } catch (error) {
       if (error instanceof ValidationError) {
-        throw new ValidationError("Email ou senha invalidos")
+        throw new ValidationError()
       } else {
         throw new Error("Erro ao acessar o banco");
       }

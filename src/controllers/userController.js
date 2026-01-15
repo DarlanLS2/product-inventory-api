@@ -16,7 +16,11 @@ export class UserController {
         res.status(200).send({token: token})
       }
     } catch (error) {
-      res.status(500).send({error: error.message})
+      if (error instanceof ValidationError) {
+        res.status(400).send({error: "Email ou senha invalidos"})
+      } else {
+        res.status(500).send({error: error.message})
+      }
     }
   }
 
