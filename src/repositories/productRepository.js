@@ -29,19 +29,19 @@ export class ProductRepository {
   }
 
   async getById(id) {
-    try{
-      const product = await this.productModel.findOne({ where: {id: id}});
+    const product = await this.productModel.findOne({ where: { id: id }});
 
-      return new Product({
-        id: product.id,
-        name: product.nome,
-        price: product.preco,
-        quantity: product.quantidade,
-        description: product.descricao
-      });
-    } catch {
-      throw new Error("Erro ao acessar o banco");
+    if (!product) {
+      return null
     }
+
+    return new Product({
+      id: product.id,
+      name: product.nome,
+      price: product.preco,
+      quantity: product.quantidade,
+      description: product.descricao
+    });
   }
   
   async register(product) {

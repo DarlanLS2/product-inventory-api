@@ -1,5 +1,4 @@
 import { ValidationError } from "../errors/ValidationError.js"
-import { NotFoundError } from "../errors/NotFoundError.js"
 
 export class UserController {
   constructor(UserService) {

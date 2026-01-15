@@ -23,14 +23,14 @@ export class ProductController {
       const product = await this.repository.getById(req.params.id);
 
       if (product == null) {
-        throw new NotFoundError("Produto não encontrado")
+        throw new NotFoundError()
       }
 
       res.set('Cache-Control', 'private, max-age=30, must-revalidate')
       res.status(200).json(product)
     } catch (error) {
       if (error instanceof NotFoundError) {
-        res.status(404).send({error: error.message})
+        res.sendStatus(404)
       } else {
         res.status(500).send({error: error.message})
       }
