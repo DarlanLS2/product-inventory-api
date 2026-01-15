@@ -1,5 +1,6 @@
 import { PassWordEncryptor } from "../utils/PassWordEncryptor.js";
 import { User } from "../entities/User.js";
+import jwt from "jsonwebtoken"
 
 export class UserService {
   constructor(userRepository) {
@@ -8,15 +9,15 @@ export class UserService {
 
   async login(body) {
     const user = await this.repository.getByEmail(body.email);
-    const isValid = await PassWordEncryptor.check(body.passWord, user.passWordHash);
-    const mockToken = "asfafa311241hsda2341"
+    const isPassWordValid = await PassWordEncryptor.check(body.passWord, user.passWordHash);
+    const token = jwt.sign({ id: user.id }, "segredo_mockado", { expiresIn: '1h' })
     
-    if (isValid) {
+    if (isPassWordValid) {
       return {
         id: user.id,
         email: user.email,
         passWord: body.passWord,
-        token: mockToken
+        token: token
       };
     } else {
       return null
