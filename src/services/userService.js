@@ -11,18 +11,14 @@ export class UserService {
   async login(body) {
     const user = await this.repository.getByEmail(body.email);
 
-    if (!user) {
-      throw new ValidationError()
-    }
+    if (!user) throw new ValidationError()
 
     const isPassWordValid = await PassWordEncryptor.check(
       body.passWord, 
       user.passWordHash
     );
     
-    if (!isPassWordValid) {
-      return null
-    }
+    if (!isPassWordValid) return null
 
     const token = jwt.sign(
       { "sub": user.id },
@@ -47,14 +43,15 @@ export class UserService {
 
   async delete(body) {
     const user = await this.repository.getByEmail(body.email);
+
+    if (!user) throw new ValidationError()
+
     const isPassWordValid = await PassWordEncryptor.check(
       body.passWord, 
       user.passWordHash
     );
 
-    if (!isPassWordValid) {
-      return null
-    }
+    if (!isPassWordValid) return null
 
     return await this.repository.deleteByEmail(body.email);
   }
