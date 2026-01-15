@@ -29,7 +29,7 @@ server.use(express.json());
 const userRepository = new UserRepository(User);
 const userService = new UserService(userRepository);
 const userController = new UserController(userService);
-const userRoutes = new UserRoute(server, userController);
+const userRoutes = new UserRoute(server, authMidleware, userController);
 userRoutes.create();
 
 const productRepository = new ProductRepository(Product)

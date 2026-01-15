@@ -39,7 +39,17 @@ export class UserService {
     return await this.repository.register(user);
   }
 
-  async delete(id) {
-    return await this.repository.delete(id);
+  async delete(body) {
+    const user = await this.repository.getByEmail(body.email);
+    const isPassWordValid = await PassWordEncryptor.check(
+      body.passWord, 
+      user.passWordHash
+    );
+
+    if (!isPassWordValid) {
+      return null
+    }
+
+    return await this.repository.deleteByEmail(body.email);
   }
 }
