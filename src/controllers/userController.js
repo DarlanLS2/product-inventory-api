@@ -24,6 +24,14 @@ export class UserController {
     }
   }
 
+  async login(req, res) {
+    const user = await this.service.login(req.body)
+
+    if (user == null) {
+      // throw erro
+    }
+  }
+
   async register(req, res) {
     try {
       const createdUser = await this.service.register(req.body)
