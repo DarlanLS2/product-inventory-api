@@ -37,10 +37,10 @@ const productController = new ProductController(productRepository)
 const productRoutes = new ProductRoute(server, authMidleware, productController)
 productRoutes.create()
 
-server.listen(3000, () => {
+server.listen(process.env.PORT, () => {
   console.log(`
     ------------------------\n
-    PORTA: 3000\n
+    PORTA: ${process.env.PORT}\n
     ------------------------\n
     Conexão com o server: ok\n
     ------------------------\n
