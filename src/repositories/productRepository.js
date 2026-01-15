@@ -58,26 +58,18 @@ export class ProductRepository {
   }
 
   async update(product) {
-    try {
-      return await this.productModel.update(
-        {
-          nome: product.name,
-          preco: product.price,
-          quantidade: product.quantity,
-          descricao: product.description
-        },
-        { where: { id: product.id } }
-      )
-    } catch {
-      throw new Error("Erro ao acessar o banco")
-    }
+    return await this.productModel.update(
+      {
+        nome: product.name,
+        preco: product.price,
+        quantidade: product.quantity,
+        descricao: product.description
+      },
+      { where: { id: product.id } }
+    )
   }
 
   async delete(id) {
-    try {
-      return await this.productModel.destroy({where: {id: id}})
-    } catch {
-      throw new Error("Erro ao acessar o banco")
-    }
+    return await this.productModel.destroy({where: {id: id}})
   }
 }

@@ -80,17 +80,16 @@ export class ProductController {
       const product = await this.repository.delete(req.params.id);
 
       if (product < 1) {
-        throw new NotFoundError("Produto não encontrado")
+        throw new NotFoundError()
       }
 
       res.set('Cache-Control', 'no-store')
-      res.status(204);
-      res.end();
+      res.sendStatus(204);
     } catch (error) {
       if (error instanceof NotFoundError) {
-        res.status(404).send({error: error.message})
+        res.sendStatus(404)
       } else {
-        res.status(500).send({error: error.message})
+        res.status(500).send({ error: error.message })
       }
     }
   }
