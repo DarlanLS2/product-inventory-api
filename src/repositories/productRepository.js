@@ -41,24 +41,20 @@ export class ProductRepository {
   }
   
   async register(product) {
-    try {
-      const createdProduct = await this.productModel.create({
-        nome: product.name,
-        preco: product.price,
-        quantidade: product.quantity,
-        descricao: product.description
-      });
+    const createdProduct = await this.productModel.create({
+      nome: product.name,
+      preco: product.price,
+      quantidade: product.quantity,
+      descricao: product.description
+    });
 
-      return new Product({
-        id: createdProduct.id,
-        name: createdProduct.nome,
-        price: createdProduct.preco,
-        quantity: createdProduct.quantidade,
-        description: createdProduct.descricao
-      })
-    } catch {
-      throw new Error("Erro ao acessar o banco");
-    }
+    return new Product({
+      id: createdProduct.id,
+      name: createdProduct.nome,
+      price: createdProduct.preco,
+      quantity: createdProduct.quantidade,
+      description: createdProduct.descricao
+    })
   }
 
   async update(product) {
