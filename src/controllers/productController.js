@@ -13,7 +13,7 @@ export class ProductController {
 
       res.set('Cache-Control', 'private, max-age=5, must-revalidate')
       res.status(200).json(products)
-    } catch(error) {
+    } catch (error) {
       res.status(500).send({error: error.message})
     }
   }

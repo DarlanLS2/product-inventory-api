@@ -6,26 +6,22 @@ export class ProductRepository {
   }
 
   async getAll() {
-    try {
-      const allProducts = await this.productModel.findAll();
-      const products = []
+    const allProducts = await this.productModel.findAll();
+    const products = []
 
-      allProducts.forEach((element) => {
-        let product = new Product({
-          id: element.id,
-          name: element.nome,
-          price: element.preco,
-          quantity: element.quantidade,
-          description: element.descricao
-        });
+    allProducts.forEach((element) => {
+      let product = new Product({
+        id: element.id,
+        name: element.nome,
+        price: element.preco,
+        quantity: element.quantidade,
+        description: element.descricao
+      });
 
-        products.push(product)
-      })
+      products.push(product)
+    })
 
-      return products
-    } catch {
-      throw new Error("Erro ao acessar o banco");
-    }
+    return products
   }
 
   async getById(id) {
