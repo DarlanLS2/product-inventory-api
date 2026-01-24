@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import express from "express";
 import path from "path";
 import cors from "cors";
-import { User } from "./src/models/userModel.js";
+import { User } from "./src/database/models/userModel.js";
 import { UserRepository } from "./src/repositories/userRepository.js";
 import { UserController } from "./src/controllers/userController.js";
 import { UserService } from "./src/services/userService.js";
@@ -10,7 +10,7 @@ import { UserRoute } from "./src/routes/userRoute.js"
 
 import { authMidleware } from "./src/authentication/authMidleware.js";
 
-import { Product } from "./src/models/productModel.js"
+import { Product } from "./src/database/models/productModel.js"
 import { ProductRepository } from "./src/repositories/productRepository.js";
 import { ProductController } from "./src/controllers/productController.js";
 import { ProductRoute } from "./src/routes/productRoute.js";
