@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import express from "express";
 import path from "path";
 import cors from "cors";
+import { syncDatabase } from "./src/database/sync.js";
 import { User } from "./src/database/models/userModel.js";
 import { UserRepository } from "./src/repositories/userRepository.js";
 import { UserController } from "./src/controllers/userController.js";
@@ -23,8 +24,7 @@ const server = express();
 server.use(cors());
 server.use(express.json());
 
-// Product.sync({ force: true })
-// User.sync({ force: true })
+await syncDatabase();
 
 const userRepository = new UserRepository(User);
 const userService = new UserService(userRepository);
@@ -37,7 +37,7 @@ const productController = new ProductController(productRepository)
 const productRoutes = new ProductRoute(server, authMidleware, productController)
 productRoutes.create()
 
-server.listen(process.env.PORT, () => {
+server.listen(process.env.PORT, "0.0.0.0", () => {
   console.log(`
     ------------------------\n
     PORTA: ${process.env.PORT}\n
