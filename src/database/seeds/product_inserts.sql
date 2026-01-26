@@ -3,8 +3,8 @@ INSERT INTO produtos (
   preco,
   quantidade,
   descricao,
-  created_at,
-  updated_at
+  createdAt,
+  updatedAt
 )
 VALUES
   ('Achocolatado em Pó 400g', 6.99, 85, 'Achocolatado em pó tradicional', NOW(), NOW()),
