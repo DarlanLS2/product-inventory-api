@@ -20,7 +20,8 @@ services:
       MYSQL_DATABASE: loja
     ports:
       - "3306:3306"
-    # volumes:
-    #   - pgdata:/var/lib/mysql/data
-    
+    volumes:
+      - mysql_data:/var/lib/mysql
 
+volumes: 
+  mysql_data:
