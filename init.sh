@@ -10,13 +10,13 @@ cursorUp=$'\033[A'
 resetLine=$'\033[K'
 reset=$'\033[0m'
 
-loadEnvVariablesToShell() {
+loadEnv() {
   set -a
   source .env
   set +a
 }
 
-askAndRunSeedInsert() {
+runSeedInsertInteractive() {
   read -p "$green ?$reset Quer fazer o insert de produtos? $green(recomendado)$reset $lightBlue[y/n]$reset: $blue" res
   echo -ne $reset
 
@@ -39,7 +39,7 @@ isNotEmpty() {
   [[ -n "$value" ]]
 }
 
-askFor () {
+ensureEnvVariable () {
   local key="$1"
   local value="${!key}"
 
@@ -47,11 +47,11 @@ askFor () {
     printf "$red ❌$reset Você não definiu $value...\n"
     sleep 1
     printf "\r$cursorUp$resetLine"
-    askAndSave $key
+    askAndSaveEnvVariable $key
   fi
 }
 
-forceDefaultVariables() {
+setDefaultEnvVariables() {
   sed -i "/^DB_HOST/d" .env
   sed -i "/^DB_PORT/d" .env
   sed -i "/^PORT/d" .env
@@ -63,20 +63,20 @@ forceDefaultVariables() {
   echo "DB_DIALECT=mysql" >> .env
 }
 
-verifyVariables() {
-  loadEnvVariablesToShell
+validateEnvVariables() {
+  loadEnv
 
   echo ""
-  askFor DB_NAME
-  askFor DB_USER
-  askFor DB_PASSWORD
-  askFor DB_ROOT_PASSWORD
-  askFor JWT_SECRET
-  forceDefaultVariables
+  ensureEnvVariable DB_NAME
+  ensureEnvVariable DB_USER
+  ensureEnvVariable DB_PASSWORD
+  ensureEnvVariable DB_ROOT_PASSWORD
+  ensureEnvVariable JWT_SECRET
+  setDefaultEnvVariables
 }
 
 
-askAndSave() {
+askAndSaveEnvVariable() {
   local key="$1"
   
   while true; do
@@ -95,23 +95,23 @@ askAndSave() {
   done
 }
 
-askForEnvVariables() {
+setupEnvVariables() {
   touch .env
 
   echo -e "\n $purpleᐳ$reset Preciso que você defina essas$bold variaveis$reset:"
 
-  askAndSave DB_NAME
-  askAndSave DB_USER
-  askAndSave DB_PASSWORD
-  askAndSave DB_ROOT_PASSWORD
-  askAndSave JWT_SECRET
+  askAndSaveEnvVariable DB_NAME
+  askAndSaveEnvVariable DB_USER
+  askAndSaveEnvVariable DB_PASSWORD
+  askAndSaveEnvVariable DB_ROOT_PASSWORD
+  askAndSaveEnvVariable JWT_SECRET
 
   echo "DB_HOST=db" >> .env
   echo "DB_PORT=3306" >> .env
   echo "PORT=3000" >> .env
   echo "DB_DIALECT=mysql" >> .env
 
-  loadEnvVariablesToShell 
+  loadEnv 
 }
 
 resetAndRunDockerCompose() {
@@ -140,7 +140,7 @@ waitForDB() {
   printf "\r$resetLine $green✓$lightBlue Preparando banco$reset\n"
 }
 
-showFinishMessage() {
+printSuccessMessage() {
   echo -e "$purple$bold ↳$reset$bold Server rodando na porta:$blue 3000$reset"
 }
 
@@ -152,7 +152,7 @@ runDockerCompose() {
   printf "\r$resetLine $green✓$lightBlue Preparando server$reset\n"
 }
 
-showDescription() {
+printHelp() {
   cat << EOF
  Project bootstrap script
 
@@ -178,13 +178,13 @@ EOF
 main() {
   case "$1" in
     --insert)
-      loadEnvVariablesToShell
-      askAndRunSeedInsert
+      loadEnv
+      runSeedInsertInteractive
       return 0
       ;;
     
     --help)
-      showDescription
+      printHelp
       return 0
       ;;
   esac
@@ -192,23 +192,23 @@ main() {
   clear
 
   if [ -f ".env" ]; then 
-    verifyVariables
+    validateEnvVariables
   else 
-    askForEnvVariables
+    setupEnvVariables
   fi
 
-  loadEnvVariablesToShell
+  loadEnv
 
   if [ "$1" = "--first" ]; then
     resetAndRunDockerCompose
     waitForDB
-    askAndRunSeedInsert
+    runSeedInsertInteractive
   else
     runDockerCompose
     waitForDB
   fi
 
-  showFinishMessage
+  printSuccessMessage
 }
 
 main "$@"
