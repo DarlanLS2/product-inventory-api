@@ -152,18 +152,48 @@ runDockerCompose() {
   printf "\r$resetLine $green✓$lightBlue Preparando server$reset\n"
 }
 
+showDescription() {
+  cat << EOF
+ Project bootstrap script
+
+ This script helps you configure environment variables,
+ start Docker containers, prepare the database and run the server.
+
+${bold} Usage: ./init.sh${reset} [OPTIONS]
+
+${bold} Options:${reset}
+${bold}   --first${reset}
+           Run the full setup process.
+           Rebuilds Docker containers, waits for the database 
+           to be ready and optionally inserts initial data.
+
+${bold}   --insert${reset}
+           Insert initial seed data into the database only.
+
+${bold}   --help${reset}
+           Print help
+EOF
+}
+
 main() {
-  if [ "$1" = "--insert" ]; then
-    loadEnvVariablesToShell 
-    askAndRunSeedInsert
-    return 0
-  fi
+  case "$1" in
+    --insert)
+      loadEnvVariablesToShell
+      askAndRunSeedInsert
+      return 0
+      ;;
+    
+    --help)
+      showDescription
+      return 0
+      ;;
+  esac
+
+  clear
 
   if [ -f ".env" ]; then 
-    clear
     verifyVariables
   else 
-    clear
     askForEnvVariables
   fi
 
@@ -173,12 +203,12 @@ main() {
     resetAndRunDockerCompose
     waitForDB
     askAndRunSeedInsert
-    showFinishMessage
   else
     runDockerCompose
     waitForDB
-    showFinishMessage
   fi
+
+  showFinishMessage
 }
 
 main "$@"
