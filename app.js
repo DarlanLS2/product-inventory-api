@@ -19,30 +19,30 @@ import { ProductRoute } from "./src/routes/productRoute.js";
 dotenv.config();
 
 const __dirname = path.resolve(); 
-const server = express(); 
+const app = express(); 
 
-server.use(cors());
-server.use(express.json());
+app.use(cors());
+app.use(express.json());
 
 await syncDatabase();
 
 const userRepository = new UserRepository(User);
 const userService = new UserService(userRepository);
 const userController = new UserController(userService);
-const userRoutes = new UserRoute(server, authMidleware, userController);
+const userRoutes = new UserRoute(app, authMidleware, userController);
 userRoutes.create();
 
 const productRepository = new ProductRepository(Product)
 const productController = new ProductController(productRepository)
-const productRoutes = new ProductRoute(server, authMidleware, productController)
+const productRoutes = new ProductRoute(app, authMidleware, productController)
 productRoutes.create()
 
-server.listen(process.env.PORT, "0.0.0.0", () => {
+app.listen(process.env.PORT, "0.0.0.0", () => {
   console.log(`
     ------------------------\n
     PORTA: ${process.env.PORT}\n
     ------------------------\n
-    Conexão com o server: ok\n
+    Conexão com o app: ok\n
     ------------------------\n
     `);
 });
