@@ -1,10 +1,12 @@
 import { UserService } from "../src/services/userService.js";
 import { ValidationError } from "../src/errors/ValidationError.js";
 import { PassWordEncryptor } from "../src/utils/PassWordEncryptor.js";
+import { User } from "../src/entities/User.js"
 import jwt from "jsonwebtoken";
 
 jest.mock("../src/utils/PassWordEncryptor.js");
 jest.mock("jsonwebtoken")
+jest.mock("../src/entities/User.js")
 
 let repository;
 let service;
@@ -42,8 +44,31 @@ describe("login", () => {
 
     expect(service.login(body)).resolves.toEqual({ token: token });
   })
-
 })
 
-// TODO: unit tests for register function
+describe("register", () => {
+  beforeEach(() => {
+    repository = {
+      register: jest.fn()
+    }
+    service = new UserService(repository);
+
+    body = { email: "randon@gmail.com", passWord: "1234" }
+  })
+
+  it("calls repository.register when user is valid", async () => {
+    const user = {
+      id: null,
+      email: "randon@gmail.com",
+      passWordHash: "1234"
+    }
+    User.mockImplementation(() => (user));
+    PassWordEncryptor.encrypt.mockReturnValue("1234")
+
+    await service.register(body);
+
+    expect(repository.register).toHaveBeenCalledWith(user)
+  })
+})
+
 // TODO: unit tests for delete function
