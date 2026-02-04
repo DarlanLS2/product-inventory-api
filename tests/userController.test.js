@@ -1,4 +1,3 @@
-import { error } from "console";
 import { UserController } from "../src/controllers/userController.js"
 import { ValidationError } from "../src/errors/ValidationError.js";
 
