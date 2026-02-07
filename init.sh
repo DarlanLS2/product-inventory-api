@@ -169,13 +169,16 @@ waitForDB() {
 }
 
 printSuccessMessage() {
-  echo -e "$purple$bold ↳$reset$bold Server rodando na porta:$blue 3000$reset"
+  echo -e "$purple$bold ↳$reset$bold Server rodando na porta:$blue 3000$reset\n"
 }
 
 runDockerCompose() {
-  printf " $orange…$lightBlue Preparando server$reset"
+  spinner "Preparando server" &
+  pid=$!
 
   docker compose up -d > /dev/null 2>&1
+
+  kill $pid
 
   printf "\r$resetLine $green✓$lightBlue Preparando server$reset\n"
 }
