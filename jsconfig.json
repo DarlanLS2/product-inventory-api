@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "checkJs": true,
+    "allowJs": true,
+    "types": ["node", "jest", "dotenv"]
+  },
+  "include": ["**/*.js"],
+  "exclude": ["node_modules"]
+}
+
