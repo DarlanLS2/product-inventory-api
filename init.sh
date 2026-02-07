@@ -10,6 +10,7 @@ cursorUp=$'\033[A'
 resetLine=$'\033[K'
 reset=$'\033[0m'
 
+
 loadEnv() {
   set -a
   source .env
@@ -114,18 +115,43 @@ setupEnvVariables() {
   loadEnv 
 }
 
+spinner() {
+  # CHARS=("⠖" "⠲" "⠴" "⠦")
+  CHARS=(
+    "◜"
+    "◟"
+    "◞"
+    "◝"
+  )
+
+  while true; do
+    for c in "${CHARS[@]}"; do
+      printf "\r\033[2K"
+      printf "$blue$bold $c \033[0m$1"
+      sleep .1
+    done
+    printf "\r\033[2K"
+  done
+}
+
 resetAndRunDockerCompose() {
-  printf " $orange…$lightBlue Preparando server$reset"
+  # printf " $orange…$lightBlue Preparando server$reset"
+  spinner "Preparando server" &
+  pid=$!
 
   docker compose down -v --remove-orphans > /dev/null 2>&1
   docker compose build --no-cache > /dev/null 2>&1
   docker compose up -d > /dev/null 2>&1
 
+  kill $pid
+
   printf "\r$resetLine $green✓$lightBlue Preparando server$reset\n"
 }
 
 waitForDB() {
-  printf " $orange…$lightBlue Preparando banco$reset"
+  # printf " $orange…$lightBlue Preparando banco$reset"
+  spinner "Preparando banco" &
+  pid=$!
 
   until docker exec mysql-db mysqladmin ping \
   -h localhost \
@@ -136,6 +162,8 @@ waitForDB() {
   > /dev/null 2>&1; do
     sleep 2
   done
+
+  kill $pid
 
   printf "\r$resetLine $green✓$lightBlue Preparando banco$reset\n"
 }
