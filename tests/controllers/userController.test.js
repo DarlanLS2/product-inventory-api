@@ -1,5 +1,5 @@
-import { UserController } from "../src/controllers/userController.js"
-import { ValidationError } from "../src/errors/ValidationError.js";
+import { UserController } from "../../src/controllers/userController.js"
+import { ValidationError } from "../../src/errors/ValidationError.js";
 
 let mockService;
 let controller

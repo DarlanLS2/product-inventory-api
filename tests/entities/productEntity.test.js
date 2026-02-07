@@ -1,5 +1,5 @@
-import { Product } from "../src/entities/Product.js";
-import { ValidationError } from "../src/errors/ValidationError.js";
+import { Product } from "../../src/entities/Product.js";
+import { ValidationError } from "../../src/errors/ValidationError.js";
 
 let validName = "rice"
 let validPrice = "20,10"

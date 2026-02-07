@@ -1,5 +1,5 @@
-import { User } from "../src/entities/User.js";
-import { ValidationError } from "../src/errors/ValidationError.js";
+import { User } from "../../src/entities/User.js";
+import { ValidationError } from "../../src/errors/ValidationError.js";
 
 describe("email validation", () => {
   it("throws ValidationError when email is invalid", () => {

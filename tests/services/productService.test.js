@@ -1,4 +1,4 @@
-import  { ProductService } from "../src/services/productService.js"
+import  { ProductService } from "../../src/services/productService.js"
 
 describe("ProductService", () => {
   let repositoryMock;
