@@ -1,4 +1,5 @@
 import { UserController } from "../../src/controllers/userController.js"
+import { NotFoundError } from "../../src/errors/NotFoundError.js";
 import { ValidationError } from "../../src/errors/ValidationError.js";
 
 let mockService;
@@ -36,24 +37,27 @@ describe("login", () => {
     expect(res.json).toHaveBeenCalledWith({ token: token });
   })
 
-  it("return 400 when service return null", async () => {
-    mockService.login.mockResolvedValue(null);
-
-    await controller.login(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ field: "email or passWord", message: "invalid" });
-  })
-
-  it("return 400 when service throw ValidationError", async () => {
-    mockService.login.mockRejectedValue(new ValidationError("mock"))
+  it("return 400 when inputs are invalid", async () => {
+    mockService.login.mockRejectedValue(new ValidationError());
 
     await controller.login(req, res);
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
-      field: "email or passWord",
-      message: "invalid"
+      title: "Invalid input", 
+      detail: "Email or password format is invalid"
+    });
+  })
+
+  it("return 404 when user is not found", async () => {
+    mockService.login.mockRejectedValue(new NotFoundError());
+
+    await controller.login(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({
+      title: "User not found", 
+      detail: "No user found with the provided email"
     });
   })
 
@@ -64,7 +68,10 @@ describe("login", () => {
     await controller.login(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ error: errorMessage});
+    expect(res.json).toHaveBeenCalledWith({
+      title: "Unexpected error",
+      detail: "unexpected database error",
+    });
   })
 })
 
