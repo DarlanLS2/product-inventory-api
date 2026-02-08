@@ -113,6 +113,17 @@ describe("register", () => {
     expect(res.json).toHaveBeenCalledWith({ field: "email", message: "required"});
   })
 
+  it("return 409 when email already in use", async () => {
+    const error = new Error();
+    error.name = "SequelizeUniqueConstraintError"
+    mockService.register.mockRejectedValue(error);
+
+    await controller.register(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(409);
+    expect(res.json).toHaveBeenCalledWith({ error: "email already in use" });
+  })
+
   it("return 500 when service return unexpected error", async () => {
     const errorMessage = "unexpected database error"
     mockService.register.mockRejectedValue(new Error(errorMessage))
