@@ -56,8 +56,8 @@ describe("login", () => {
 
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith({
-      title: "User not found", 
-      detail: "No user found with the provided email"
+      title: "Invalid credentials", 
+      detail: "Invalid email or password"
     });
   })
 
@@ -200,8 +200,8 @@ describe("delete", () => {
 
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith({
-      title: "User not found", 
-      detail: "No user found with the provided email"
+      title: "Invalid credentials", 
+      detail: "Invalid email or password"
     });
   })
 

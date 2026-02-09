@@ -19,8 +19,8 @@ export class UserController {
         })
       } else if (error instanceof NotFoundError) {
         res.status(404).json({
-          title: "User not found", 
-          detail: "No user found with the provided email"
+          title: "Invalid credentials", 
+          detail: "Invalid email or password"
         })
       } else {
         res.status(500).json({
@@ -79,8 +79,8 @@ export class UserController {
         })
       } else if (error instanceof NotFoundError) {
         res.status(404).json({
-          title: "User not found", 
-          detail: "No user found with the provided email"
+          title: "Invalid credentials", 
+          detail: "Invalid email or password"
         })
       } else {
         res.status(500).json({
