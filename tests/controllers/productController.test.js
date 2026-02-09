@@ -99,7 +99,7 @@ describe("getById", () => {
 
     await controller.getById(req, res);
 
-    expect(res.sendStatus).toHaveBeenCalledWith(404)
+    expect(res.status).toHaveBeenCalledWith(404)
     expect(res.json).toHaveBeenCalledWith({
       title: "Product not found", 
       detail: "No product found with the provided id"

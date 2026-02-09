@@ -33,7 +33,7 @@ export class ProductController {
       res.status(200).json(product)
     } catch (error) {
       if (error instanceof NotFoundError) {
-        res.sendStatus(404).json({
+        res.status(404).json({
           title: "Product not found", 
           detail: "No product found with the provided id"
         })
