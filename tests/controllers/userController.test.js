@@ -117,7 +117,10 @@ describe("register", () => {
     await controller.register(req, res);
 
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ field: "email", message: "required"});
+    expect(res.json).toHaveBeenCalledWith({
+      title: "Invalid input",
+      detail: "Invalid email format"
+    });
   })
 
   it("return 409 when email already in use", async () => {
@@ -128,17 +131,23 @@ describe("register", () => {
     await controller.register(req, res);
 
     expect(res.status).toHaveBeenCalledWith(409);
-    expect(res.json).toHaveBeenCalledWith({ error: "email already in use" });
+    expect(res.json).toHaveBeenCalledWith({
+      title: "Email in use" ,
+      detail: "The provided email is already in use" 
+    });
   })
 
   it("return 500 when service return unexpected error", async () => {
-    const errorMessage = "unexpected database error"
+    const errorMessage = "Unexpected database error"
     mockService.register.mockRejectedValue(new Error(errorMessage))
 
     await controller.register(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ error: errorMessage });
+    expect(res.json).toHaveBeenCalledWith({
+      title: "Unexpected error",
+      detail: "Unexpected database error",
+    });
   })
 })
 
