@@ -2,6 +2,7 @@ import { PassWordEncryptor } from "../utils/PassWordEncryptor.js";
 import { User } from "../entities/User.js";
 import jwt from "jsonwebtoken"
 import { ValidationError } from "../errors/ValidationError.js";
+import { NotFoundError } from "../errors/NotFoundError.js";
 
 export class UserService {
   constructor(userRepository) {
@@ -11,14 +12,14 @@ export class UserService {
   async login(body) {
     const user = await this.repository.getByEmail(body.email);
 
-    if (!user) throw new ValidationError()
+    if (!user) throw new NotFoundError()
 
     const isPassWordValid = await PassWordEncryptor.check(
       body.passWord, 
       user.passWordHash
     );
     
-    if (!isPassWordValid) return null
+    if (!isPassWordValid) throw new NotFoundError()
 
     const token = jwt.sign(
       { "sub": user.id },
@@ -44,7 +45,7 @@ export class UserService {
   async delete(body) {
     const user = await this.repository.getByEmail(body.email);
 
-    if (!user) throw new ValidationError()
+    if (!user) throw new NotFoundError()
 
     const isPassWordValid = await PassWordEncryptor.check(
       body.passWord, 

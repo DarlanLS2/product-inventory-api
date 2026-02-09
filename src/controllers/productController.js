@@ -14,7 +14,10 @@ export class ProductController {
       res.set('Cache-Control', 'private, max-age=5, must-revalidate')
       res.status(200).json(products)
     } catch (error) {
-      res.status(500).json({ error: error.message })
+      res.status(500).json({
+        title: "Unexpected error",
+        detail: error.message,
+      })
     }
   }
 
@@ -30,9 +33,15 @@ export class ProductController {
       res.status(200).json(product)
     } catch (error) {
       if (error instanceof NotFoundError) {
-        res.sendStatus(404)
+        res.status(404).json({
+          title: "Product not found", 
+          detail: "No product found with the provided id"
+        })
       } else {
-        res.status(500).json({ error: error.message })
+        res.status(500).json({
+          title: "Unexpected error",
+          detail: error.message
+        })
       }
     }
   }
@@ -46,9 +55,15 @@ export class ProductController {
       res.status(201).json(createdProduct)
     } catch (error) {
       if (error instanceof ValidationError) {
-        res.status(400).json({ field: error.field, message: error.message })
+        res.status(400).json({
+          title: "Invalid input",
+          detail: `Invalid ${error.field} format`
+        })
       } else {
-        res.status(500).json({ error: error.message })
+        res.status(500).json({
+          title: "Unexpected error",
+          detail: error.message
+        })
       }
     }
   }
@@ -66,11 +81,20 @@ export class ProductController {
       res.sendStatus(204);
     } catch (error) {
       if (error instanceof ValidationError) {
-        res.status(400).json({ field: error.field, message: error.message })
+        res.status(400).json({
+          title: "Invalid input",
+          detail: `Invalid ${error.field} format`
+        })
       } else if (error instanceof NotFoundError) {
-        res.sendStatus(404)
+        res.status(404).json({
+          title: "Product not found", 
+          detail: "No product found with the provided id"
+        })
       } else {
-        res.status(500).json({ error: error.message })
+        res.status(500).json({
+          title: "Unexpected error",
+          detail: error.message,
+        })
       }
     }
   }
@@ -87,9 +111,15 @@ export class ProductController {
       res.sendStatus(204);
     } catch (error) {
       if (error instanceof NotFoundError) {
-        res.sendStatus(404)
+        res.status(404).json({
+          title: "Product not found", 
+          detail: "No product found with the provided id"
+        })
       } else {
-        res.status(500).json({ error: error.message })
+        res.status(500).json({
+          title: "Unexpected error",
+          detail: error.message,
+        })
       }
     }
   }

@@ -1,4 +1,5 @@
 import { UserController } from "../../src/controllers/userController.js"
+import { NotFoundError } from "../../src/errors/NotFoundError.js";
 import { ValidationError } from "../../src/errors/ValidationError.js";
 
 let mockService;
@@ -36,24 +37,27 @@ describe("login", () => {
     expect(res.json).toHaveBeenCalledWith({ token: token });
   })
 
-  it("return 400 when service return null", async () => {
-    mockService.login.mockResolvedValue(null);
-
-    await controller.login(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ field: "email or passWord", message: "invalid" });
-  })
-
-  it("return 400 when service throw ValidationError", async () => {
-    mockService.login.mockRejectedValue(new ValidationError("mock"))
+  it("return 400 when inputs are invalid", async () => {
+    mockService.login.mockRejectedValue(new ValidationError());
 
     await controller.login(req, res);
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
-      field: "email or passWord",
-      message: "invalid"
+      title: "Invalid input", 
+      detail: "Email or password format is invalid"
+    });
+  })
+
+  it("return 404 when user is not found", async () => {
+    mockService.login.mockRejectedValue(new NotFoundError());
+
+    await controller.login(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({
+      title: "Invalid credentials", 
+      detail: "Invalid email or password"
     });
   })
 
@@ -64,7 +68,10 @@ describe("login", () => {
     await controller.login(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ error: errorMessage});
+    expect(res.json).toHaveBeenCalledWith({
+      title: "Unexpected error",
+      detail: "unexpected database error",
+    });
   })
 })
 
@@ -110,17 +117,37 @@ describe("register", () => {
     await controller.register(req, res);
 
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ field: "email", message: "required"});
+    expect(res.json).toHaveBeenCalledWith({
+      title: "Invalid input",
+      detail: "Invalid email format"
+    });
+  })
+
+  it("return 409 when email already in use", async () => {
+    const error = new Error();
+    error.name = "SequelizeUniqueConstraintError"
+    mockService.register.mockRejectedValue(error);
+
+    await controller.register(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(409);
+    expect(res.json).toHaveBeenCalledWith({
+      title: "Email in use" ,
+      detail: "The provided email is already in use" 
+    });
   })
 
   it("return 500 when service return unexpected error", async () => {
-    const errorMessage = "unexpected database error"
+    const errorMessage = "Unexpected database error"
     mockService.register.mockRejectedValue(new Error(errorMessage))
 
     await controller.register(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ error: errorMessage });
+    expect(res.json).toHaveBeenCalledWith({
+      title: "Unexpected error",
+      detail: "Unexpected database error",
+    });
   })
 })
 
@@ -154,18 +181,6 @@ describe("delete", () => {
     expect(res.sendStatus).toHaveBeenCalledWith(204);
   })
 
-  it("return 400 when service return null", async () => {
-    mockService.delete.mockResolvedValue(null)
-
-    await controller.delete(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({
-      field: "email or passWord",
-      message: "invalid"
-    });
-  })
-
   it("return 400 when service throw ValidationError", async () => {
     mockService.delete.mockRejectedValue(new ValidationError("mock"))
 
@@ -173,8 +188,20 @@ describe("delete", () => {
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
-      field: "email or passWord",
-      message: "invalid"
+      title: "Invalid input",
+      detail: "Email or password format is invalid"
+    });
+  })
+
+  it("return 404 when service return null", async () => {
+    mockService.delete.mockResolvedValue(null)
+
+    await controller.delete(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({
+      title: "Invalid credentials", 
+      detail: "Invalid email or password"
     });
   })
 
@@ -185,6 +212,9 @@ describe("delete", () => {
     await controller.delete(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ error: errorMessage });
+    expect(res.json).toHaveBeenCalledWith({
+      title: "Unexpected error",
+      detail: "unexpected database error",
+    });
   })
 })
