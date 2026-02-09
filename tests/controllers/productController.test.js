@@ -300,7 +300,11 @@ describe("delete", () => {
 
     await controller.delete(req, res);
 
-    expect(res.sendStatus).toHaveBeenCalledWith(404);
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({
+      title: "Product not found", 
+      detail: "No product found with the provided id"
+    });
   })
 
   it("return 500 when repository throws unexpected error", async () => {
@@ -309,6 +313,9 @@ describe("delete", () => {
     await controller.delete(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ error: "unexpected database error"});
+    expect(res.json).toHaveBeenCalledWith({
+      title: "Unexpected error",
+      detail: "unexpected database error",
+    });
   })
 })
