@@ -1,20 +1,26 @@
 import { ValidationError } from "../errors/ValidationError.js";
 
+type Fields = {
+  id?: string | number
+  email: string,
+  passWordHash: string
+}
+
 export class User {
-  constructor(fields) {
+  id: string | number | undefined
+  email: string
+  passWordHash: string
+
+  constructor(fields: Fields) {
     this.#validateEmail(fields.email);
 
-    this.id = fields.id == null ? null : fields.id;
+    this.id = fields.id;
     this.email = fields.email;
     this.passWordHash = fields.passWordHash;
   }
 
-  #validateEmail(email) {
+  #validateEmail(email: string) {
     const regex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-
-    if (email == null) {
-      throw new ValidationError("email", "required");
-    }
 
     if (!regex.test(email)) {
       throw new ValidationError("email", "invalid_format");
