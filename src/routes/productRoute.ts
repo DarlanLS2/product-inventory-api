@@ -1,5 +1,16 @@
+import { ProductController } from "../controllers/productController.js";
+import type { Express, RequestHandler } from "express"
+
 export class ProductRoute {
-  constructor(server, authMiddleware, productController) {
+  controller: ProductController
+  server: Express
+  authMiddleware: RequestHandler
+
+  constructor(
+    server: Express,
+    authMiddleware: RequestHandler,
+    productController: ProductController
+  ) {
     this.controller = productController
     this.authMiddleware = authMiddleware
     this.server = server;
