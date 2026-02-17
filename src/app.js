@@ -22,12 +22,12 @@ export default async function(
   const userRepository = new repositories.UserRepository(models.User);
   const userService = new services.UserService(userRepository);
   const userController = new controllers.UserController(userService);
-  const userRoutes = new routes.UserRoute(app, middlewares.authMidleware, userController);
+  const userRoutes = new routes.UserRoute(app, middlewares.authMiddleware, userController);
   userRoutes.create();
 
   const productRepository = new repositories.ProductRepository(models.Product)
   const productController = new controllers.ProductController(productRepository)
-  const productRoutes = new routes.ProductRoute(app, middlewares.authMidleware, productController)
+  const productRoutes = new routes.ProductRoute(app, middlewares.authMiddleware, productController)
   productRoutes.create()
 
   return app;

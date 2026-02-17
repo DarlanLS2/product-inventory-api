@@ -1,7 +1,7 @@
 export class UserRoute {
-  constructor(server, authMidleware, userController) {
+  constructor(server, authMiddleware, userController) {
     this.controller = userController
-    this.authMidleware = authMidleware
+    this.authMiddleware = authMiddleware
     this.server = server;
   }
 
@@ -12,7 +12,7 @@ export class UserRoute {
     this.server.post("/user", async (req, res) => {
       await this.controller.register(req, res);
     });
-    this.server.delete("/user", this.authMidleware, async (req, res) => {
+    this.server.delete("/user", this.authMiddleware, async (req, res) => {
       await this.controller.delete(req, res);
     });
   }

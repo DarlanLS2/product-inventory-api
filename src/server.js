@@ -5,7 +5,7 @@ import { UserController } from "./controllers/userController.js";
 import { UserService } from "./services/userService.js";
 import { UserRoute } from "./routes/userRoute.js"
 
-import { authMidleware } from "./authentication/authMidleware.js";
+import { authMiddleware } from "./authentication/authMiddleware.js";
 
 import { Product } from "./database/models/productModel.js"
 import { ProductRepository } from "./repositories/productRepository.js";
@@ -21,7 +21,7 @@ const app = await init(
   { UserController, ProductController },
   { UserService },
   { UserRoute, ProductRoute },
-  { authMidleware },
+  { authMiddleware },
 )
 
 app.listen(process.env.PORT, "0.0.0.0", () => {
