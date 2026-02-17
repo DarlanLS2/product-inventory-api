@@ -28,9 +28,9 @@ export class UserService {
     
     if (!isPassWordValid) throw new NotFoundError()
 
-    const secret = process.env.JWT_SECRET;
+    const secret = process.env.JWT_SECRET
     
-    if (!secret) throw new Error()
+    if (!secret) throw new Error("JWT_SECRET required")
 
     const token = jwt.sign({ "sub": user.id }, secret, { expiresIn: '1h' })
 

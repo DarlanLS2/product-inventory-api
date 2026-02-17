@@ -41,6 +41,7 @@ describe("login", () => {
     const token = "asdfasdbadgasdfgadfasdf"
     repository.getByEmail.mockResolvedValue({ passWordHash: "mock" })
     PasswordEncryptor.check.mockResolvedValue(true);
+    process.env.JWT_SECRET = "teste"
     jwt.sign.mockReturnValue(token);
 
     expect(service.login(body)).resolves.toEqual({ token: token });

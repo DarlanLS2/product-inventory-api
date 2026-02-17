@@ -70,7 +70,7 @@ export class ProductRepository {
     )
   }
 
-  async delete(id: string): Promise<number> {
+  async delete(id: string | string[]): Promise<number> {
     return await this.productModel.destroy({ where: { id: id } })
   }
 }
