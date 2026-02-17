@@ -27,7 +27,7 @@ export class ProductRepository {
     return products
   }
 
-  async getById(id: string): Promise<Product | null> {
+  async getById(id: string | string[]): Promise<Product | null> {
     const product = await this.productModel.findOne({ where: { id: id }});
 
     if (!product) return null
