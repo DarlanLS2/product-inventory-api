@@ -1,17 +1,17 @@
 import { User } from "../entities/User.js";
-import { ValidationError } from "../errors/ValidationError.js";
+import type { UserModel } from "./UserModel.js"
 
 export class UserRepository {
-  constructor(UserModel) {
+  userModel: UserModel
+
+  constructor(UserModel: UserModel) {
     this.userModel = UserModel
   }
 
-  async getByEmail(email) {
+  async getByEmail(email: string): Promise<User | null> {
     const user = await this.userModel.findOne({ where: { email: email }});
 
-    if (user == null) {
-      return null
-    }
+    if (!user) return null
 
     return new User({
       id: user.id,
@@ -20,7 +20,7 @@ export class UserRepository {
     });
   }
 
-  async register(user) {
+  async register(user: User): Promise<User> {
     const createdUser = await this.userModel.create({
       email: user.email,
       passWordHash: user.passWordHash
@@ -33,7 +33,7 @@ export class UserRepository {
     })
   }
 
-  async deleteByEmail(email) {
+  async deleteByEmail(email: string): Promise<number> {
     return await this.userModel.destroy({ where: { email: email }})
   }
 }
