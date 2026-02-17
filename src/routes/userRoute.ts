@@ -1,5 +1,16 @@
+import { UserController } from "../controllers/userController.js";
+import type { Express, RequestHandler } from "express";
+
 export class UserRoute {
-  constructor(server, authMiddleware, userController) {
+  controller: UserController
+  authMiddleware: RequestHandler
+  server: Express
+
+  constructor(
+    server: Express,
+    authMiddleware: RequestHandler,
+    userController: UserController
+  ) {
     this.controller = userController
     this.authMiddleware = authMiddleware
     this.server = server;
