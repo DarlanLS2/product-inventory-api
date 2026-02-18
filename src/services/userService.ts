@@ -59,7 +59,7 @@ export class UserService {
       user.passWordHash
     );
 
-    if (!isPassWordValid) return null
+    if (!isPassWordValid) throw new NotFoundError()
 
     return await this.repository.deleteByEmail(body.email);
   }
