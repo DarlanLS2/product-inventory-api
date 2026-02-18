@@ -11,6 +11,7 @@ import { UserRoute } from "./routes/userRoute.js"
 import { Product } from "./database/models/productModel.js"
 import { ProductRepository } from "./repositories/productRepository.js";
 import { ProductController } from "./controllers/productController.js";
+import { ProductService } from "./services/productService.js";
 import { ProductRoute } from "./routes/productRoute.js";
 
 import init from "./app.js"
@@ -20,7 +21,7 @@ const app = await init(
   { User, Product },
   { UserRepository, ProductRepository },
   { UserController, ProductController },
-  { UserService },
+  { UserService, ProductService },
   { UserRoute, ProductRoute },
   { authMiddleware },
 )

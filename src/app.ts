@@ -8,6 +8,7 @@ import { authMiddleware } from "./authentication/authMiddleware.js";
 import type { ProductModel } from "./repositories/productModel.js";
 import { ProductRepository } from "./repositories/productRepository.js";
 import { ProductController } from "./controllers/productController.js";
+import { ProductService } from "./services/productService.js";
 import { ProductRoute } from "./routes/productRoute.js";
 
 import type { UserModel } from "./repositories/UserModel.js";
@@ -37,6 +38,7 @@ type Controllers = {
 
 type Services = {
   UserService: typeof UserService
+  ProductService: typeof ProductService
 }
 
 type Routes = {
@@ -61,6 +63,7 @@ export default async function(
   dotenv.config();
 
   const app = express(); 
+
   app.use(cors());
   app.use(express.json());
 
@@ -70,11 +73,14 @@ export default async function(
   const userService = new services.UserService(userRepository);
   const userController = new controllers.UserController(userService);
   const userRoutes = new routes.UserRoute(app, middlewares.authMiddleware, userController);
+
   userRoutes.create();
 
   const productRepository = new repositories.ProductRepository(models.Product)
-  const productController = new controllers.ProductController(productRepository)
+  const productService = new services.ProductService(productRepository);
+  const productController = new controllers.ProductController(productService)
   const productRoutes = new routes.ProductRoute(app, middlewares.authMiddleware, productController)
+
   productRoutes.create()
 
   return app;
