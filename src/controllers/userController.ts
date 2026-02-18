@@ -67,9 +67,7 @@ export class UserController {
 
   async delete(req: Request, res: Response) {
     try {
-      const user = await this.service.delete(req.body);
-
-      if (user == null) throw new NotFoundError()
+      await this.service.delete(req.body);
 
       res.set('Cache-Control', 'no-store')
       res.sendStatus(204);
