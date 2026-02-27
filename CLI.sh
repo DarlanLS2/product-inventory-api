@@ -10,7 +10,6 @@ cursorUp=$'\033[A'
 resetLine=$'\033[K'
 reset=$'\033[0m'
 
-
 loadEnv() {
   set -a
   source .env
@@ -21,7 +20,17 @@ runSeedInsertInteractive() {
   read -p "$green ?$reset Do you want to insert products? $green(recommended)$reset $lightBlue[y/n]$reset: $blue" res
   echo -ne $reset
 
-  if [ "$res" = "y" ]; then
+  if [ "$res" != "y" ]; then
+    return 0
+  fi
+
+  if [[ "$db" == "postgres" ]]; then
+    docker exec -i postgres-db psql \
+      -U "$DB_USER" \
+      -d "$DB_NAME" \
+      < ./src/database/seeds/product_inserts_postgres.sql \
+      > /dev/null 2>&1
+  else
     docker exec -i mysql-db mysql \
       -h 127.0.0.1 \
       --protocol=tcp \
@@ -29,7 +38,7 @@ runSeedInsertInteractive() {
       -p"$DB_PASSWORD" \
       "$DB_NAME" \
       --default-character-set=utf8mb4 \
-      < ./src/database/seeds/product_inserts.sql \
+      < ./src/database/seeds/product_inserts_mysql.sql \
       > /dev/null 2>&1
   fi
 }
@@ -58,21 +67,29 @@ setDefaultEnvVariables() {
   sed -i "/^PORT/d" .env
   sed -i "/^DB_DIALECT/d" .env
 
+  if [[ "$db" == "postgres" ]]; then
+    echo "DB_PORT=5432" >> .env
+    echo "DB_DIALECT=postgres" >> .env
+  else
+    echo "DB_PORT=3306" >> .env
+    echo "DB_DIALECT=mysql" >> .env
+  fi
+
   echo "DB_HOST=db" >> .env
-  echo "DB_PORT=3306" >> .env
   echo "PORT=3000" >> .env
-  echo "DB_DIALECT=mysql" >> .env
 }
 
 validateEnvVariables() {
   loadEnv
 
   echo ""
+
   ensureEnvVariable DB_NAME
   ensureEnvVariable DB_USER
   ensureEnvVariable DB_PASSWORD
   ensureEnvVariable DB_ROOT_PASSWORD
   ensureEnvVariable JWT_SECRET
+
   setDefaultEnvVariables
 }
 
@@ -107,10 +124,8 @@ setupEnvVariables() {
   askAndSaveEnvVariable DB_ROOT_PASSWORD
   askAndSaveEnvVariable JWT_SECRET
 
-  echo "DB_HOST=db" >> .env
-  echo "DB_PORT=3306" >> .env
-  echo "PORT=3000" >> .env
-  echo "DB_DIALECT=mysql" >> .env
+  setDefaultEnvVariables 
+  
   echo ""
 
   loadEnv 
@@ -139,9 +154,15 @@ resetAndRunDockerCompose() {
   spinner "Preparing server" &
   pid=$!
 
-  docker compose down -v --remove-orphans > /dev/null 2>&1
-  docker compose build --no-cache > /dev/null 2>&1
-  docker compose up -d > /dev/null 2>&1
+  if [[ "$db" == "postgres" ]]; then
+    docker compose -f docker-compose-postgres.yml down -v --remove-orphans > /dev/null 2>&1
+    docker compose -f docker-compose-postgres.yml build --no-cache > /dev/null 2>&1
+    docker compose -f docker-compose-postgres.yml up -d > /dev/null 2>&1
+  else
+    docker compose -f docker-compose-mysql.yml down -v --remove-orphans > /dev/null 2>&1
+    docker compose -f docker-compose-mysql.yml build --no-cache > /dev/null 2>&1
+    docker compose -f docker-compose-mysql.yml up -d > /dev/null 2>&1
+  fi
 
   kill $pid
 
@@ -152,15 +173,25 @@ waitForDB() {
   spinner "Preparing database" &
   pid=$!
 
-  until docker exec mysql-db mysqladmin ping \
-  -h localhost \
-  --protocol=tcp \
-  -u"$DB_USER" \
-  -p"$DB_PASSWORD" \
-  --silent \
-  > /dev/null 2>&1; do
-    sleep 2
-  done
+  if [[ "$db" == "postgres" ]]; then
+    until docker exec postgres-db pg_isready \
+      -h localhost \
+      -p 5432 \
+      -U "$DB_USER" \
+      > /dev/null 2>&1; do
+        sleep 2
+    done
+  else
+    until docker exec mysql-db mysqladmin ping \
+    -h localhost \
+    --protocol=tcp \
+    -u"$DB_USER" \
+    -p"$DB_PASSWORD" \
+    --silent \
+    > /dev/null 2>&1; do
+      sleep 2
+    done
+  fi
 
   kill $pid
 
@@ -175,7 +206,11 @@ runDockerCompose() {
   spinner "Preparando server" &
   pid=$!
 
-  docker compose up -d > /dev/null 2>&1
+  if [[ "$db" == "postgres" ]]; then
+    docker compose -f docker-compose-postgres.yml up -d > /dev/null 2>&1
+  else
+    docker compose -f docker-compose-mysql.yml up -d > /dev/null 2>&1
+  fi
 
   kill $pid
 
@@ -210,8 +245,36 @@ EOF
 
 stopDockerCompose() {
   echo ""
-  echo ""
-  docker compose down
+
+  if [[ "$db" == "postgres" ]]; then
+    docker compose -f docker-compose-postgres.yml down 
+  else
+    docker compose -f docker-compose-mysql.yml down 
+  fi
+}
+
+askDatabaseType() {
+  while true; do
+    printf "\n$bold Select a database:$reset\n\n"
+    printf " $lightBlue▪$reset MySQL    $green[1]$reset\n"
+    printf " $lightBlue▪$reset Postgres $green[2]$reset\n"
+     
+    printf "\n$green ?$reset Option: $blue"
+    read option
+    echo -ne $reset
+
+    case $option in
+      1)
+        db="mysql"
+        return 0
+      ;;
+
+      2)
+        db="postgres"
+        return 0
+        ;;
+    esac
+  done
 }
 
 interactiveMode() {
@@ -235,6 +298,8 @@ interactiveMode() {
 
     case $option in
       1)
+        askDatabaseType
+
         if [ -f ".env" ]; then 
           validateEnvVariables
         else 
@@ -304,6 +369,8 @@ main() {
       ;;
 
     -f | --full)
+      askDatabaseType
+
       if [ -f ".env" ]; then 
         validateEnvVariables
       else 
